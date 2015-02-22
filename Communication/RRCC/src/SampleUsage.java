@@ -33,7 +33,7 @@ import rov.rasputin.comm.State;
  *
  * @author Kolatat Thangkasemvathana <kolatat.t@gmail.com>
  */
-public class SampleUsage
+class SampleUsage
 {
     public static void main(String[] args){
         try {
