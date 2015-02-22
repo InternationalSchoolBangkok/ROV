@@ -38,7 +38,9 @@
       </toolsSet>
       <compileType>
         <linkerTool>
-          <commandLine>-lpthread</commandLine>
+          <linkerLibItems>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+          </linkerLibItems>
         </linkerTool>
       </compileType>
       <item path="SampleUsage.cpp" ex="false" tool="1" flavor2="0">
