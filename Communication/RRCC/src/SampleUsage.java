@@ -1,4 +1,3 @@
-
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
@@ -28,32 +27,31 @@ import rov.rasputin.comm.State;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 /**
  *
  * @author Kolatat Thangkasemvathana <kolatat.t@gmail.com>
  */
-class SampleUsage
-{
-    public static void main(String[] args){
+class SampleUsage {
+
+    public static void main(String[] args) {
         try {
-            
             // create a new State for the ROV
-            State ROV = new State("10.69.69.69", 6969, 6969, 32, 50);
-            
+            State ROV = new State("192.168.2.2", 6969, 6969, 32, 50);
             // start the communication with the ROV
             ROV.startTXRX();
-            
+
             // set channel 5 on the ROV to 56
-            ROV.set(5, 56);
-            
-            // get the value of channel 12
-            ROV.get(12);
-            
+            ROV.set(5, 69);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SampleUsage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ROV.get(8);
             // close the connection
             ROV.stopTXRX();
-            
-        } catch(UnknownHostException | SocketException ex) {
+
+        } catch (UnknownHostException | SocketException ex) {
             Logger.getLogger(SampleUsage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

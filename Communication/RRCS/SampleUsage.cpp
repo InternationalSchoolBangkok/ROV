@@ -1,13 +1,13 @@
-/* 
- * File:   SampleUsage.cpp
- * Author: kolatat
- *
- * Created on February 22, 2015, 8:13 PM
- */
-
 #include <cstdlib>
+#include <fstream>
+#include <iostream>
+//#include "State.h"
+//lol dunno what the following do
+#include <fcntl.h>
+#include <termios.h>
+#include <cstdlib>
+#include <unistd.h>
 
-#include "State.h"
 
 using namespace std;
 
@@ -15,22 +15,21 @@ using namespace std;
  * 
  */
 int main(int argc, char** argv) {
-
-    // create a new State for the ROV
-    State *ROV = new State(32, 6969, 6969);
-
-    // start accepting communication
-    ROV->startTXRX();
-
-    // set channel 8 on the ROV to 69
-    ROV->set(8, 69);
-
-    // get channel 6 on the ROV
-    ROV->get(6);
-
-    // close connection
-    ROV->stopTXRX();
-
-    return 0;
+    int fd = open("/dev/ttyACM0", O_RDWR | O_NONBLOCK);
+    if (fd < 0) {
+        cout << "Could not open" << endl;
+    }else{
+        cout << "Opened" << endl;
+    }
+    sleep(3);
+    ssize_t written = write(fd, "data", 4);
+    if (written >= 0){
+        cout << "Successful write!" << endl;
+    }
+    /*else if (errno == EWOULDBLOCK){// handle case where the write would block
+         cout << "naw boi!" << endl;
+    }*/
+    else{
+        cout << "lol" << endl;
+    }
 }
-

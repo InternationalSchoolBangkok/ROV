@@ -6,18 +6,6 @@
 package rov;
 
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -32,7 +20,7 @@ public class Interface extends javax.swing.JFrame {
      */
     public Interface() {
         initComponents();
-        worker = new Worker(this,x, y, z, rz, cam1View);
+        worker = new Worker(this,x, y, z, rz, cam1View,stateLabel);
         worker.start();
         cam1View.setSize(1000, 1000);
     }
@@ -55,6 +43,7 @@ public class Interface extends javax.swing.JFrame {
         z = new javax.swing.JLabel();
         rz = new javax.swing.JLabel();
         cam1View = new javax.swing.JLabel();
+        stateLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -79,12 +68,13 @@ public class Interface extends javax.swing.JFrame {
 
         rz.setText("HUE");
 
-        cam1View.setPreferredSize(new java.awt.Dimension(0, 0));
         cam1View.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 cam1ViewComponentResized(evt);
             }
         });
+
+        stateLabel.setText("State");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -103,9 +93,12 @@ public class Interface extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(rz)
                             .addComponent(y)
-                            .addComponent(x)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(x)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 283, Short.MAX_VALUE)
+                                .addComponent(stateLabel))
                             .addComponent(z))))
-                .addContainerGap(197, Short.MAX_VALUE))
+                .addContainerGap())
             .addComponent(cam1View, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -113,7 +106,9 @@ public class Interface extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(x, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(x)
+                        .addComponent(stateLabel))
                     .addComponent(jLabel1))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -187,86 +182,10 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel rz;
+    private javax.swing.JLabel stateLabel;
     private javax.swing.JLabel x;
     private javax.swing.JLabel y;
     private javax.swing.JLabel z;
     // End of variables declaration//GEN-END:variables
 }
 
-class Worker extends Thread {
-
-    private final javax.swing.JLabel rz;
-    private final javax.swing.JLabel x;
-    private final javax.swing.JLabel y;
-    private final javax.swing.JLabel z;
-    private final javax.swing.JLabel cam1View;
-    private final javax.swing.JFrame jf;
-    float[] cData;
-    private ImageIcon imageIcon;
-    int cam1width, cam1height;
-
-    public Worker(javax.swing.JFrame jf, JLabel x, JLabel y, JLabel z, JLabel rz, JLabel cam1View) {
-        this.jf = jf;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.rz = rz;
-        this.cam1View = cam1View;
-    }
-
-    public void setImageScale(int screenWidth, int screenHeight) {
-        cam1width = screenWidth;
-        cam1height = (int) ((float) cam1width * 0.65);
-    }
-
-    @Override
-    public void run() {
-        int i = 0;
-        while (true) {
-            try {
-                Control control = new Control();
-                control.poll();
-                cData = control.getComponentsData();
-            } catch (Exception e) {
-                //System.out.println("Control Exception: " + e);
-                JOptionPane.showMessageDialog(jf, "Could not connect to control: " + e);
-            }
-            try {
-                BufferedImage myPicture = ImageIO.read(new URL("http://192.168.2.2/cam_pic.php?t=\"" + i));
-                myPicture = resize(myPicture, cam1width, cam1height);
-                imageIcon = new ImageIcon(myPicture);
-                updateUI();
-            } catch (IOException ioe) {
-                //System.out.println("Video Exception: "+ioe);
-                JOptionPane.showMessageDialog(jf, "Could not get video: " + ioe);
-            }
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            i++;
-        }
-    }
-
-    public static BufferedImage resize(BufferedImage image, int width, int height) {
-        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
-        Graphics2D g2d = (Graphics2D) bi.createGraphics();
-        g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-        g2d.drawImage(image, 0, 0, width, height, null);
-        g2d.dispose();
-        return bi;
-    }
-
-    private void updateUI() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                x.setText("" + cData[0]);
-                y.setText("" + cData[1]);
-                z.setText("" + cData[2]);
-                rz.setText("" + cData[3]);
-                cam1View.setIcon(imageIcon);
-            }
-        });
-    }
-}
