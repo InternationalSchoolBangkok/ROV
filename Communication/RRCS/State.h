@@ -10,9 +10,8 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
@@ -21,6 +20,17 @@
 #include <sys/socket.h>
 #include <pthread.h>
 #include <vector>
+#include <cstdarg>
+#include <sstream>
+#include <utility>
+#include <algorithm>
+
+namespace Kola {
+    void log(std::string src, std::string msg);
+    std::string format(const char* fmt, ...);
+    std::vector<std::string> explode(std::string const & s, char delim);
+    bool isNumber(const std::string& s);
+}
 
 typedef struct sockaddr_in InetAddress;
 
@@ -35,6 +45,8 @@ class State {
 public:
     State(int datawidth, int ROVPort, int clientPort);
     virtual ~State();
+    
+    int getDatawidth();
 
     void startTXRX();
     void stopTXRX();
@@ -43,6 +55,7 @@ public:
     int get(int channel);
 
 private:
+    std::string src;
     const int datawidth, ROVPort, clientPort;
     int sockfd;
     InetAddress ROVAddress;
@@ -54,6 +67,8 @@ private:
     void TXRX();
     static void *staticTXRX(void *args);
 };
+
+
 
 #endif	/* STATE_H */
 
