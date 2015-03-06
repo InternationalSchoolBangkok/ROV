@@ -130,14 +130,19 @@ void State::TXRX() {
     InetAddress clientAddr;
     socklen_t addrLen = sizeof (clientAddr);
     log(src, "Ready for TXRX.");
+    int i=0;
     while (doTXRX) {
         if (recvfrom(sockfd, buffer, datawidth, 0, (struct sockaddr*) &clientAddr, &addrLen) < 0) {
             // error receiving
+            log(src,"Error receiving.");
         }
         memcpy(clientState, buffer, datawidth);
         memcpy(buffer, ROVState, datawidth);
+        
+        clientAddr.sin_port = htons(clientPort);
         if (sendto(sockfd, buffer, datawidth, 0, (struct sockaddr*) &clientAddr, addrLen) < 0) {
             // error sending
+            log(src,"Error sending.");
         }
     }
     log(src, "Closing TXRX...");

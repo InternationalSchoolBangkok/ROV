@@ -38,7 +38,8 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <standard>8</standard>
+          <commandlineTool>g++</commandlineTool>
+          <commandLine>-std=c++0x</commandLine>
         </ccTool>
         <linkerTool>
           <linkerLibItems>
