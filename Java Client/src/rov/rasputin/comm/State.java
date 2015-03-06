@@ -111,7 +111,7 @@ public class State
             while(receiving){
                 try {
                     RXSocket.receive(packet);
-                    if(packet.getAddress() == ROVAddr){
+                    if(packet.getAddress().equals(ROVAddr)){
                         ROVState = packet.getData();
                     } else {
                         // RX from unknown source

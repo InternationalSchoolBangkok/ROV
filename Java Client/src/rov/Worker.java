@@ -27,6 +27,8 @@ import javax.swing.SwingUtilities;
 class Worker extends Thread {
 
     boolean skipVideo = true;
+    boolean skipController = false;
+    boolean skipRasputin = false;
     private final javax.swing.JLabel rz;
     private final javax.swing.JLabel x;
     private final javax.swing.JLabel y;
@@ -34,7 +36,7 @@ class Worker extends Thread {
     private final javax.swing.JLabel cam1View;
     private final javax.swing.JFrame jf;
     private final javax.swing.JLabel stateLabel;
-    
+
     private ImageIcon imageIcon;
     int cam1width, cam1height;
 
@@ -59,28 +61,33 @@ class Worker extends Thread {
         int i = 0;
         boolean connected = false;
         rov.rasputin.comm.State ROV = null;
-        /*try {
-            ROV = new rov.rasputin.comm.State("192.168.2.2", 6969, 6969, 32, 50);
-            ROV.startTXRX();
-            connected = true;
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("cannot connect to ROV1: " + ex);
-            stateLabel.setText("Headless");
-        } catch (SocketException ex) {
-            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Cannot connect to ROV2: " + ex);
-            stateLabel.setText("Headless");
-        }*/
-
-        while (true) {
+        if (!skipRasputin) {
             try {
-                Control control = new Control();
-                control.poll();
-                cData = control.getComponentsData();
-            } catch (Exception e) {
-                //System.out.println("Control Exception: " + e);
-                JOptionPane.showMessageDialog(jf, "Could not connect to control: " + e);
+                ROV = new rov.rasputin.comm.State("192.168.1.62", 6969, 6969, 32, 50);
+                ROV.startTXRX();
+                connected = true;
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("cannot connect to ROV1: " + ex);
+                stateLabel.setText("Headless");
+            } catch (SocketException ex) {
+                Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Cannot connect to ROV2: " + ex);
+                stateLabel.setText("Headless");
+            }
+        }
+        ROV.set(0, -69);
+        while (true) {
+            if (!skipController) {
+                try {
+                    Control control = new Control();
+                    control.poll();
+                    cData = control.getComponentsData();
+                    System.out.println("cdat0: "+cData[0]);
+                } catch (Exception e) {
+                    //System.out.println("Control Exception: " + e);
+                    JOptionPane.showMessageDialog(jf, "Could not connect to control: " + e);
+                }
             }
             if (!skipVideo) {
                 try {
@@ -105,9 +112,10 @@ class Worker extends Thread {
                 values = getOutput(cData);
                 for (int b = 0; b < 32; b++) {
                     ROV.set(b, values[b]);
+                   System.out.print("Values["+b+"]"+" "+ROV.get(b)+" ");
                 }
             }
-
+            System.out.println("nigggu");
         }
     }
 
@@ -118,16 +126,16 @@ class Worker extends Thread {
         values[1] = (byte) (cData[1] * 127);
         values[2] = (byte) (cData[2] * 127);
         values[3] = 0;
-        values[4] = (cData[15]==1f)?127:(cData[13]==1f)?-127:0;
-        values[5] = (cData[14]==1f)?127:(cData[12]==1f)?-127:0;
+        values[4] = (cData[15] == 1f) ? 127 : (cData[13] == 1f) ? -127 : 0;
+        values[5] = (cData[14] == 1f) ? 127 : (cData[12] == 1f) ? -127 : 0;
         //for debugging
-        for(int i=0;i<6;i++){
-            System.out.print("Values["+i+"]"+" "+values[i]+" ");
-        }
-        System.out.println();
+        /*for(int i=0;i<6;i++){
+         System.out.print("Values["+i+"]"+" "+values[i]+" ");
+         }
+         System.out.println();*/
         //
         return values;
-                /*
+        /*
          outChannel# - function - cData
          0 - straife - 0
          1 - forward/back - 1
@@ -148,15 +156,21 @@ class Worker extends Thread {
     }
 
     private void updateUI(float cData[]) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                //System.out.println("13,15 "+cData[13]+" "+cData[15]);
-                x.setText("" + cData[0]);
-                y.setText("" + cData[1]);
-                z.setText("" + cData[2]);
-                rz.setText("" + cData[3]);
-                cam1View.setIcon(imageIcon);
+        if (cData != null) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    //System.out.println("13,15 "+cData[13]+" "+cData[15]);
+                    x.setText("" + cData[0]);
+                    y.setText("" + cData[1]);
+                    z.setText("" + cData[2]);
+                    rz.setText("" + cData[3]);
+                    cam1View.setIcon(imageIcon);
+                }
+            });
+        } else {
+            if (!skipController) {
+                System.out.print("cData null");
             }
-        });
+        }
     }
 }

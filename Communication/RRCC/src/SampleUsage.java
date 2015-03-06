@@ -36,10 +36,9 @@ class SampleUsage {
     public static void main(String[] args) {
         try {
             // create a new State for the ROV
-            State ROV = new State("192.168.2.2", 6969, 6969, 32, 50);
+            State ROV = new State("192.168.1.62", 6969, 6969, 32, 50);
             // start the communication with the ROV
             ROV.startTXRX();
-
             // set channel 5 on the ROV to 56
             ROV.set(5, 69);
             try {
@@ -47,7 +46,15 @@ class SampleUsage {
             } catch (InterruptedException ex) {
                 Logger.getLogger(SampleUsage.class.getName()).log(Level.SEVERE, null, ex);
             }
-            ROV.get(8);
+            int hue = 1*1;
+            while(hue==1){
+            System.out.println("Get c: "+ROV.get(0));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SampleUsage.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             // close the connection
             ROV.stopTXRX();
 
