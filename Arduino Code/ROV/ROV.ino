@@ -23,7 +23,6 @@ void setup() {
   //initialize all serial coms
   Serial.begin(38400);  //this line is strictly for debugging
   Serial1.begin(38400); //this line is for the arduimu
-  Serial2.begin(38400); //this line is for the rasputin
   //attach motors 1-8 to pins 2-9
   for (int i = 2; i < motorNumber; i++) {
     mots[i].attach(i);
