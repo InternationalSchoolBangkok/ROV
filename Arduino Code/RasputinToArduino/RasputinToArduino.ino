@@ -1,3 +1,6 @@
+//compile time settings
+#define printUpdateFreq 0
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
@@ -36,7 +39,7 @@ void loop() {
         clearArray(inBytes);
         i=-1;
         header++;
-        Serial.println("first valid header found");
+        //Serial.println("first valid header found");
       }
       else{//otherwise reset the buffer and parse the data between the 2 headers
         header = 0;//reset the header counter
@@ -48,16 +51,18 @@ void loop() {
   }
   if (loopCounter-lastLoop == 100000) {
     int freq = 100L*(1000000000L / (micros() - startTime));
+#if printUpdateFreq
     Serial.print("Update Frequency: ");
     Serial.println(freq);
+#endif
     startTime = micros();
     lastLoop = loopCounter;
   }
   loopCounter++;
 }
 void parse(char bytes[]){
-  Serial.println("parsing:");
-  for(int i=0;i<64;i++){
+  //Serial.println("parsing:");
+  for(int i=0;i<32;i++){
     Serial.write(bytes[i]);
   }
 }
@@ -66,6 +71,7 @@ void clearArray(char array[]){
     array[i] = '/0';
   }
 }
+
 
 
 
