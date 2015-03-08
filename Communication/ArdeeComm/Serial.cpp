@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "Serial.h"
 
 Serial::Serial(string deviceString, int baudRate, int channels) {
@@ -44,6 +46,9 @@ Serial::Serial(string deviceString, int baudRate, int channels) {
         case 9600:
             baud = B9600;
             break;
+        case 19200:
+            baud = B19200;
+            break;
         case 38400:
             baud = B38400;
             break;
@@ -71,34 +76,45 @@ Serial::Serial(string deviceString, int baudRate, int channels) {
 
 bool Serial::spew(unsigned char sendVals[], int length) {
     //----- TX BYTES -----
+    unsigned char message[39];
+    unsigned char startSeq[] = "8=D";
+    memcpy(message,startSeq,3);  //add start seq to both sides of message
+    memcpy(message+35,startSeq,3);
+    message[38]='\0';//weird thing with memcpy
     if (length > channels) {
-        length = 31;
+        length = 32;
         printf("Only the first %i bytes of your message were sent ", channels);
     } else if (length < channels) {
-        //fill(sendVals + length, sendVals + channels, '¿');
+        cout << "Sendmsg length was less than number of channels; remaining channels set to ?" << endl;
+        fill(sendVals + length, sendVals + channels, 0);
     }
+    for(int i=3;i<35;i++){
+        message[i]=sendVals[i-3];
+    }
+    cout<<"TO ARDEE:\n"<<message<<"\n"<<endl;
     if (uart0_filestream != -1) {
-        int count = write(uart0_filestream, sendVals, length); //Filestream, bytes to write, number of bytes to write
+        int count = write(uart0_filestream, message, 39); //Filestream, bytes to write, number of bytes to write
         //printf("PTXBUFFER: %p\n", p_tx_buffer);
         //printf("TXBUFFER: %p\n", &tx_buffer);
         if (count < 0) {
             printf("UART TX error\n");
             return false;
         } else {
+            //cout<<"TRIED to send ardee dis: "<<sendVals<<endl;
             return true;
         }
     } else {
         return false;
     }
-   /* //sketch
-    unsigned char tx_buffer[20] = {'8', '=', 'D', 'a', 'b', 'c', 'd', 'e', 'f', '8', '=', 'D'};
-    if (uart0_filestream != -1) {
-        int count = write(uart0_filestream, sendVals, length);
-        if (count < 0) {
-            printf("UART TX error\n");
-        }
-    }
-    return true;*/
+    /* //sketch
+     unsigned char tx_buffer[20] = {'8', '=', 'D', 'a', 'b', 'c', 'd', 'e', 'f', '8', '=', 'D'};
+     if (uart0_filestream != -1) {
+         int count = write(uart0_filestream, sendVals, length);
+         if (count < 0) {
+             printf("UART TX error\n");
+         }
+     }
+     return true;*/
 }
 
 void Serial::closeSerial() {
@@ -144,16 +160,16 @@ void Serial::tableUpdater() {
                 appendBuffers(tempBuffer, cursor, rx_buffer, rx_length); //buff 2 to back of buff 1
                 //cout<<"cursor boost";
                 //cout<<cursor<<endl;
-                //cout<<tempBuffer<<endl;
-                //cout<<rx_buffer<<endl;
+                //cout << "!!!TEMP BUFF PRINT STARTS HERE\n" << tempBuffer << "\nEND OF TB PRINT" << endl;
+                //cout<<rx_buffer<<flush;
                 //cout<<rx_length<<endl;
                 cursor += rx_length;
                 if (cursor >= 512) {
                     cursor = 0;
+                    fill(tempBuffer, tempBuffer + 512, 0); //reset temp buffer incase bug 
                 }
             }
             if (cursor > 1) {
-
                 string bigBoi = string((const char*) tempBuffer);
                 string searchFor = "8=D";
                 int pos = bigBoi.find(searchFor);
@@ -162,16 +178,15 @@ void Serial::tableUpdater() {
                     //cout << "NGSINGS1" << endl;
                     //cout<<bigBoi<<endl;
                     //cout<<searchFor<<endl;
-
                 } else {
-                    if (bigBoi.find(searchFor, pos + 1) != string::npos) {
+                    if (bigBoi.find(searchFor, pos + 4) != string::npos) {//eventually make this 32 chars length nic
                         cout << "Values From Ardee: ";
-                        for (int i = 0; i < channels; i++) {
-                            //cout << "HERE2" << endl;
+                        for (int i = 0; i < 32; i++) {
                             fromArduino[i] = tempBuffer[i + pos + 3];
                             cout << fromArduino[i];
                         }
                         cout<<endl;
+                        //cout << "TB PRIOR TO RESET\n" << tempBuffer << "\nEND OF TB" << endl;
                         fill(tempBuffer, tempBuffer + 512, 0); //reset temp buffer
                         cursor = 0;
                     }
