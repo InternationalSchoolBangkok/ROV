@@ -66,6 +66,7 @@ Serial::Serial(string deviceString, int baudRate, int channels) {
     options.c_lflag = 0;
     tcflush(uart0_filestream, TCIFLUSH);
     tcsetattr(uart0_filestream, TCSANOW, &options);
+    initTime = time(NULL);
     //create the rx thread
     LolStruct *threadData = new LolStruct();
     threadData->obj = this;
@@ -76,45 +77,41 @@ Serial::Serial(string deviceString, int baudRate, int channels) {
 
 bool Serial::spew(unsigned char sendVals[], int length) {
     //----- TX BYTES -----
-    unsigned char message[39];
-    unsigned char startSeq[] = "8=D";
-    memcpy(message,startSeq,3);  //add start seq to both sides of message
-    memcpy(message+35,startSeq,3);
-    message[38]='\0';//weird thing with memcpy
-    if (length > channels) {
-        length = 32;
-        printf("Only the first %i bytes of your message were sent ", channels);
-    } else if (length < channels) {
-        cout << "Sendmsg length was less than number of channels; remaining channels set to ?" << endl;
-        fill(sendVals + length, sendVals + channels, 0);
-    }
-    for(int i=3;i<35;i++){
-        message[i]=sendVals[i-3];
-    }
-    cout<<"TO ARDEE:\n"<<message<<"\n"<<endl;
-    if (uart0_filestream != -1) {
-        int count = write(uart0_filestream, message, 39); //Filestream, bytes to write, number of bytes to write
-        //printf("PTXBUFFER: %p\n", p_tx_buffer);
-        //printf("TXBUFFER: %p\n", &tx_buffer);
-        if (count < 0) {
-            printf("UART TX error\n");
-            return false;
-        } else {
-            //cout<<"TRIED to send ardee dis: "<<sendVals<<endl;
-            return true;
+    if (time(NULL) - initTime > 1) {
+        unsigned char message[39];
+        unsigned char startSeq[] = "8=D";
+        memcpy(message, startSeq, 3); //add start seq to both sides of message
+        memcpy(message + 35, startSeq, 3);
+        message[38] = '\0'; //weird thing with memcpy
+        if (length > channels) {
+            length = 32;
+            printf("Only the first %i bytes of your message were sent ", channels);
+        } else if (length < channels) {
+            cout << "Sendmsg length of " << length << " was less than number of channels; remaining channels set to 0" << endl;
+            for (int i = length; i < channels; i++) {//fill remaining slots of sendVals with \0
+                sendVals[i] = '\0';
+            }
         }
-    } else {
-        return false;
+        for (int i = 3; i < 35; i++) {
+            message[i] = sendVals[i - 3];
+        }
+
+        //cout << "TO ARDEE:\n" << message << "\n" << endl;
+        if (uart0_filestream != -1) {
+            int count = write(uart0_filestream, message, 39); //Filestream, bytes to write, number of bytes to write
+            //printf("PTXBUFFER: %p\n", p_tx_buffer);
+            //printf("TXBUFFER: %p\n", &tx_buffer);
+            if (count < 0) {
+                printf("UART TX error\n");
+                return false;
+            } else {
+                //cout<<"TRIED to send ardee dis: "<<sendVals<<endl;
+                return true;
+            }
+        } else {
+            return false;
+        }
     }
-    /* //sketch
-     unsigned char tx_buffer[20] = {'8', '=', 'D', 'a', 'b', 'c', 'd', 'e', 'f', '8', '=', 'D'};
-     if (uart0_filestream != -1) {
-         int count = write(uart0_filestream, sendVals, length);
-         if (count < 0) {
-             printf("UART TX error\n");
-         }
-     }
-     return true;*/
 }
 
 void Serial::closeSerial() {
@@ -166,33 +163,44 @@ void Serial::tableUpdater() {
                 cursor += rx_length;
                 if (cursor >= 512) {
                     cursor = 0;
-                    fill(tempBuffer, tempBuffer + 512, 0); //reset temp buffer incase bug 
+                    clearUnsignedCharArray(tempBuffer, 512);
                 }
-            }
-            if (cursor > 1) {
-                string bigBoi = string((const char*) tempBuffer);
-                string searchFor = "8=D";
-                int pos = bigBoi.find(searchFor);
-                if (pos == string::npos) {
+                //search for searchSeq in temp buffer
+                unsigned char searchSeq[] = {'8', '=', 'D'};
+                int pos = searchForCharSeq(tempBuffer, searchSeq, 3, 0, 512);
+                if (pos == -1) {
+                    /*cout << "\n000DID NOT FIND PENIS NOOOOOO- TB:\n" << endl;
+                    for (int i = 0; i < 512; i++) {//debug
+                        cout << tempBuffer[i] << flush;
+                    }*/
                     //position not found
                     //cout << "NGSINGS1" << endl;
                     //cout<<bigBoi<<endl;
                     //cout<<searchFor<<endl;
                 } else {
-                    if (bigBoi.find(searchFor, pos + 4) != string::npos) {//eventually make this 32 chars length nic
-                        cout << "Values From Ardee: ";
-                        for (int i = 0; i < 32; i++) {
-                            fromArduino[i] = tempBuffer[i + pos + 3];
-                            cout << fromArduino[i];
+                    //cout << "\n111HERE HERE HERE HUEHEUUEHEUEHEUUHE" << endl;
+                    if (pos < 476) {
+                        if (searchForCharSeq(tempBuffer, searchSeq, 3, pos + 35, 512) != -1) {
+                            //cout << "Values From Ardee: ";
+                            for (int i = 0; i < 32; i++) {
+                                fromArduino[i] = tempBuffer[i + pos + 3];
+                                //cout <<"I: " <<i<<" "<<fromArduino[i] << flush; 
+                                //cout << fromArduino[i] << flush;          
+                            }
+                            // cout << "\nEND OF FROM ARDEE" << endl;
+                            //cout << "TB PRIOR TO RESET\n" << tempBuffer << "\nEND OF TB" << endl;
+                            clearUnsignedCharArray(tempBuffer, 512);
+                            cursor = 0;
                         }
-                        cout<<endl;
-                        //cout << "TB PRIOR TO RESET\n" << tempBuffer << "\nEND OF TB" << endl;
-                        fill(tempBuffer, tempBuffer + 512, 0); //reset temp buffer
+                    } else {//otherwise cursor is so far back that it will start looking after the buffer ends
+                        cout << "search string too far back" << endl;
                         cursor = 0;
+                        clearUnsignedCharArray(tempBuffer, 512);
                     }
                 }
                 //cout<<tempBuffer<<endl;
             }
+
         } else {
             cout << "uartStream ggd" << endl;
             pthread_exit(NULL);
@@ -224,4 +232,30 @@ void Serial::getSpew(unsigned char values[]) {
     for (int i = 0; i < channels; i++) {
         values[i] = fromArduino[i];
     }
+}
+
+void Serial::clearUnsignedCharArray(unsigned char array[], int length) {
+    for (int i = 0; i < length; i++) {
+        array[i] = '\0';
+    }
+}
+
+int Serial::searchForCharSeq(unsigned char bigy[], unsigned char key[], int keyLength, int searchFrom, int searchTo) {
+    bool found = false;
+    for (int i = searchFrom; i < searchTo; i++) {
+        if (bigy[i] == key[0]) {
+            found = true;
+            for (int u = 1; u < keyLength; u++) {
+                if (bigy[u + i] != key[u]) {
+                    found = false;
+                }
+            }
+            if (found) {
+                return i;
+            } else {
+                return -1;
+            }
+        }
+    }
+    return -1;
 }
