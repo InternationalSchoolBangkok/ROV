@@ -65,7 +65,6 @@ class Worker extends Thread {
                     Control control = new Control();
                     control.poll();
                     cData = control.getComponentsData();
-                    System.out.println("cdat0: "+cData[0]);
                 } catch (Exception e) {
                     //System.out.println("Control Exception: " + e);
                     JOptionPane.showMessageDialog(parent, "Could not connect to control: " + e);
@@ -78,14 +77,17 @@ class Worker extends Thread {
                 Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
             }
             i++;
-            getOutput(cData);
             if (connected) {
                 int values[];
                 values = getOutput(cData);
                 for (int b = 0; b < 32 && rasputin!=null; b++) {
                     rasputin.set(b, values[b]);
-                   System.out.print("Values["+b+"]"+" "+rasputin.get(b)+" ");
+                    //System.out.print("Values["+b+"]"+" "+rasputin.get(b)+" ");
                 }
+                for (int b = 0; b < 32; b++) {
+                    System.out.print(rasputin.get(b)+" ");
+                }
+                System.out.println();
             }
         }
     }
