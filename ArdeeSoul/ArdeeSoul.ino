@@ -36,15 +36,11 @@ void loop() {
     Serial.write('D');
     Serial.write('\n');
     //end of og response
-
-      parse((char*)in);//possible weird behavior due to cast
+    parse((char*)in);//possible weird behavior due to cast
     //debug using Serial1
-    //Serial1.println("DS");
-    for(int i=0;i<dataWidth+4;i++){
-      //Serial1.print(in[i],DEC); //debug
-      //Serial1.print(" "); //debug
-    }
-    //Serial1.println();
+    /*for(int i=0;i<dataWidth+4;i++){
+      Serial1.write(in[i]); //debug
+    }*/
     //end of debug
   }
 }
@@ -69,6 +65,8 @@ void parse(char bytes[]){
   }
 }
 //0bcdefghijklmnopqrstuvwxyzabcdef8=D 
+
+
 
 
 
