@@ -10,9 +10,10 @@ import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.ds.ipcam.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -20,7 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
+import org.netbeans.lib.awtextra.AbsoluteConstraints;
+import org.netbeans.lib.awtextra.AbsoluteLayout;
 
 /**
  *
@@ -30,7 +32,7 @@ public class Display extends javax.swing.JFrame {
 
     private Worker worker;
     private Properties settings;
-    private Webcam olga, alexei;
+    private Webcam olga, alexei, maria;
     
     private void loadSettings(){
         Webcam.setDriver(new IpCamDriver());
@@ -59,10 +61,11 @@ public class Display extends javax.swing.JFrame {
         
         IpCamDeviceRegistry.unregisterAll();
         String format = "http://%s/videostream.cgi?loginuse=%s&loginpas=%s";
-        Dimension d = new Dimension(500, 375);
+        Dimension d = new Dimension(600, 400);
         try {
             IpCamDeviceRegistry.register("Olga", String.format(format,settings.getProperty("olgaAddr"), user,pass), IpCamMode.PUSH, auth).setResolution(d);
             IpCamDeviceRegistry.register("Alexei", String.format(format,settings.getProperty("alexeiAddr"), user,pass), IpCamMode.PUSH, auth).setResolution(d);
+            IpCamDeviceRegistry.register("Maria", String.format(format,settings.getProperty("mariaAddr"), user,pass), IpCamMode.PUSH, auth).setResolution(d);
         } catch(MalformedURLException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -89,12 +92,23 @@ public class Display extends javax.swing.JFrame {
         alexeiPanel.revalidate();
         alexeiPanel.repaint();
         
+        maria = Webcam.getWebcams().get(2);
+        WebcamPanel subMaria = new WebcamPanel(maria);
+        subMaria.setFPSDisplayed(true);
+        subMaria.setDisplayDebugInfo(true);
+        subMaria.setFPSLimit(60);
+        mariaPanel.removeAll();
+        mariaPanel.add(subMaria);
+        mariaPanel.revalidate();
+        mariaPanel.repaint();
+        
         pack();
     }
     
     private void disconnectCam(){
         olga.close();
         alexei.close();
+        maria.close();
     }
 
     /**
@@ -104,7 +118,14 @@ public class Display extends javax.swing.JFrame {
         loadSettings();
         createCam();
         initComponents();
+        
+        if(settings.getBoolean("debugMode")){
+            Debugger.main(null);
+        }
+        
+        getContentPane().setBackground(Color.black);
         createAndStartWorker();
+        connectCam();
     }
 
     /**
@@ -114,184 +135,79 @@ public class Display extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
-        xAnalogLabel = new JLabel();
-        yAnalogLabel = new JLabel();
-        zAnalogLabel = new JLabel();
-        rzAnalogLabel = new JLabel();
-        xLabel = new JLabel();
-        yLabel = new JLabel();
-        zLabel = new JLabel();
-        rzLabel = new JLabel();
-        stateLabel = new JLabel();
+        mariaPanel = new JPanel();
         olgaPanel = new JPanel();
         alexeiPanel = new JPanel();
-        jSeparator1 = new JSeparator();
-        connectCamBtn = new JButton();
-        disconnectCamBtn = new JButton();
-        channelDisp = new JLabel();
-        imuLabel = new JLabel();
-        drawingPanel0 = new JPanel();
+        meterset0 = new JPanel();
 
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("ROV Rasputin Commander");
+        setBackground(new Color(0, 0, 0));
+        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         setName("rovCommander"); // NOI18N
+        setUndecorated(true);
+        setPreferredSize(new Dimension(1280, 800));
         setResizable(false);
+        addKeyListener(new KeyAdapter()
+        {
+            public void keyPressed(KeyEvent evt)
+            {
+                formKeyPressed(evt);
+            }
+        });
+        getContentPane().setLayout(new AbsoluteLayout());
 
-        xAnalogLabel.setText("X-Analog:");
+        mariaPanel.setBackground(new Color(0, 0, 255));
+        mariaPanel.setAlignmentX(0.0F);
+        mariaPanel.setAlignmentY(0.0F);
+        mariaPanel.setMaximumSize(new Dimension(600, 400));
+        mariaPanel.setMinimumSize(new Dimension(600, 400));
+        mariaPanel.setPreferredSize(new Dimension(600, 400));
+        mariaPanel.setLayout(new BorderLayout());
+        getContentPane().add(mariaPanel, new AbsoluteConstraints(0, 400, -1, -1));
 
-        yAnalogLabel.setText("Y-Analog:");
-
-        zAnalogLabel.setText("Z-Analog:");
-
-        rzAnalogLabel.setText("RZ-Analog:");
-
-        xLabel.setText("0.0");
-
-        yLabel.setText("0.0");
-
-        zLabel.setText("0.0");
-
-        rzLabel.setText("0.0");
-
-        stateLabel.setText("State");
-
-        olgaPanel.setBackground(new Color(0, 0, 0));
-        olgaPanel.setMinimumSize(new Dimension(640, 480));
+        olgaPanel.setBackground(new Color(0, 0, 255));
+        olgaPanel.setMaximumSize(new Dimension(600, 400));
+        olgaPanel.setMinimumSize(new Dimension(600, 400));
+        olgaPanel.setPreferredSize(new Dimension(600, 400));
         olgaPanel.setLayout(new BorderLayout());
+        getContentPane().add(olgaPanel, new AbsoluteConstraints(0, 0, -1, -1));
 
-        alexeiPanel.setBackground(new Color(0, 0, 0));
-        alexeiPanel.setPreferredSize(new Dimension(500, 375));
+        alexeiPanel.setBackground(new Color(0, 0, 255));
+        alexeiPanel.setMaximumSize(new Dimension(600, 400));
+        alexeiPanel.setMinimumSize(new Dimension(600, 400));
+        alexeiPanel.setPreferredSize(new Dimension(600, 400));
         alexeiPanel.setLayout(new BorderLayout());
+        getContentPane().add(alexeiPanel, new AbsoluteConstraints(600, 0, -1, -1));
 
-        connectCamBtn.setText("Connect Cameras");
-        connectCamBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                connectCamBtnActionPerformed(evt);
-            }
-        });
+        meterset0.setBackground(new Color(0, 0, 0));
+        meterset0.setMaximumSize(new Dimension(380, 380));
+        meterset0.setMinimumSize(new Dimension(380, 380));
 
-        disconnectCamBtn.setText("Disconnect Cameras");
-        disconnectCamBtn.setEnabled(false);
-        disconnectCamBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                disconnectCamBtnActionPerformed(evt);
-            }
-        });
-
-        channelDisp.setText("CHANNELs");
-        channelDisp.setToolTipText("");
-
-        imuLabel.setText("IMUs");
-
-        GroupLayout drawingPanel0Layout = new GroupLayout(drawingPanel0);
-        drawingPanel0.setLayout(drawingPanel0Layout);
-        drawingPanel0Layout.setHorizontalGroup(drawingPanel0Layout.createParallelGroup(GroupLayout.LEADING)
-            .add(0, 0, Short.MAX_VALUE)
+        GroupLayout meterset0Layout = new GroupLayout(meterset0);
+        meterset0.setLayout(meterset0Layout);
+        meterset0Layout.setHorizontalGroup(meterset0Layout.createParallelGroup(GroupLayout.LEADING)
+            .add(0, 380, Short.MAX_VALUE)
         );
-        drawingPanel0Layout.setVerticalGroup(drawingPanel0Layout.createParallelGroup(GroupLayout.LEADING)
-            .add(0, 160, Short.MAX_VALUE)
+        meterset0Layout.setVerticalGroup(meterset0Layout.createParallelGroup(GroupLayout.LEADING)
+            .add(0, 380, Short.MAX_VALUE)
         );
 
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(drawingPanel0, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jSeparator1)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(GroupLayout.LEADING)
-                            .add(xAnalogLabel)
-                            .add(yAnalogLabel)
-                            .add(rzAnalogLabel))
-                        .add(19, 19, 19)
-                        .add(layout.createParallelGroup(GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(yLabel)
-                                .addPreferredGap(LayoutStyle.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(channelDisp))
-                            .add(layout.createSequentialGroup()
-                                .add(xLabel)
-                                .addPreferredGap(LayoutStyle.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(stateLabel))
-                            .add(layout.createSequentialGroup()
-                                .add(rzLabel)
-                                .add(0, 0, Short.MAX_VALUE))
-                            .add(layout.createSequentialGroup()
-                                .add(zLabel)
-                                .addPreferredGap(LayoutStyle.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(imuLabel))))
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(GroupLayout.LEADING)
-                            .add(zAnalogLabel)
-                            .add(layout.createSequentialGroup()
-                                .add(connectCamBtn)
-                                .addPreferredGap(LayoutStyle.RELATED)
-                                .add(disconnectCamBtn))
-                            .add(layout.createSequentialGroup()
-                                .add(olgaPanel, GroupLayout.PREFERRED_SIZE, 500, GroupLayout.PREFERRED_SIZE)
-                                .add(0, 0, 0)
-                                .add(alexeiPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                        .add(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(GroupLayout.TRAILING, layout.createParallelGroup(GroupLayout.BASELINE)
-                        .add(xLabel)
-                        .add(stateLabel))
-                    .add(xAnalogLabel))
-                .addPreferredGap(LayoutStyle.UNRELATED)
-                .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                    .add(yAnalogLabel)
-                    .add(yLabel)
-                    .add(channelDisp))
-                .addPreferredGap(LayoutStyle.UNRELATED)
-                .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                    .add(zAnalogLabel)
-                    .add(zLabel)
-                    .add(imuLabel))
-                .addPreferredGap(LayoutStyle.UNRELATED)
-                .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                    .add(rzAnalogLabel)
-                    .add(rzLabel))
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(drawingPanel0, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(olgaPanel, GroupLayout.PREFERRED_SIZE, 375, GroupLayout.PREFERRED_SIZE)
-                    .add(alexeiPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                    .add(connectCamBtn)
-                    .add(disconnectCamBtn))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        getContentPane().add(meterset0, new AbsoluteConstraints(610, 410, 380, 380));
 
         pack();
-        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void connectCamBtnActionPerformed(ActionEvent evt)//GEN-FIRST:event_connectCamBtnActionPerformed
-    {//GEN-HEADEREND:event_connectCamBtnActionPerformed
-        connectCam();
-        connectCamBtn.setEnabled(false);
-        disconnectCamBtn.setEnabled(true);
-    }//GEN-LAST:event_connectCamBtnActionPerformed
-
-    private void disconnectCamBtnActionPerformed(ActionEvent evt)//GEN-FIRST:event_disconnectCamBtnActionPerformed
-    {//GEN-HEADEREND:event_disconnectCamBtnActionPerformed
-        disconnectCam();
-        connectCamBtn.setEnabled(true);
-        disconnectCamBtn.setEnabled(false);
-    }//GEN-LAST:event_disconnectCamBtnActionPerformed
+    private void formKeyPressed(KeyEvent evt)//GEN-FIRST:event_formKeyPressed
+    {//GEN-HEADEREND:event_formKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_ESCAPE || evt.getKeyCode()==KeyEvent.VK_Q){
+            dispose();
+            System.exit(0);
+        }
+    }//GEN-LAST:event_formKeyPressed
 
     /**
      * @param args the command line arguments
@@ -316,22 +232,9 @@ public class Display extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JPanel alexeiPanel;
-    public JLabel channelDisp;
-    private JButton connectCamBtn;
-    private JButton disconnectCamBtn;
-    public JPanel drawingPanel0;
-    public JLabel imuLabel;
-    private JSeparator jSeparator1;
+    private JPanel mariaPanel;
+    public JPanel meterset0;
     private JPanel olgaPanel;
-    private JLabel rzAnalogLabel;
-    public JLabel rzLabel;
-    public JLabel stateLabel;
-    private JLabel xAnalogLabel;
-    public JLabel xLabel;
-    private JLabel yAnalogLabel;
-    public JLabel yLabel;
-    private JLabel zAnalogLabel;
-    public JLabel zLabel;
     // End of variables declaration//GEN-END:variables
 }
 

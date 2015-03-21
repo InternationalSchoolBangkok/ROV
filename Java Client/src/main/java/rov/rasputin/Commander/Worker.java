@@ -5,12 +5,19 @@
  */
 package rov.rasputin.Commander;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import rov.rasputin.Communication.ROV;
 
@@ -20,15 +27,14 @@ import rov.rasputin.Communication.ROV;
  */
 class Worker extends Thread {
 
-    private final boolean skipController;
-    private final boolean skipCommunication;
+    private final boolean skipController, skipCommunication, debugMode;
     
     private final Display parent;
     private final Properties settings;
     
     private ROV rasputin;
     
-    private float roll, pitch;
+    private float roll, pitch, yaw;
 
     public Worker(Display display, Properties settings) {
         parent = display;
@@ -37,6 +43,7 @@ class Worker extends Thread {
         
         skipCommunication = settings.getBoolean("workerSkipCommunication");
         skipController = settings.getBoolean("workerSkipController");
+        debugMode = settings.getBoolean("debugMode");
     }
 
     @Override
@@ -56,11 +63,9 @@ class Worker extends Thread {
             } catch (UnknownHostException ex) {
                 Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("cannot connect to ROV1: " + ex);
-                parent.stateLabel.setText("Headless");
             } catch (SocketException ex) {
                 Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
                 System.out.println("Cannot connect to ROV2: " + ex);
-                parent.stateLabel.setText("Headless");
             }
         }
         while (true) {
@@ -78,6 +83,13 @@ class Worker extends Thread {
                 // roll(0,1)max180 pitch(2,3)max180
                 roll = (rasputin.get(0)*256+(rasputin.get(1)+128))/32768f*180;
                 pitch = (rasputin.get(2)*256+(rasputin.get(3)+128))/32768f*180;
+            }
+            if(debugMode){
+                if(Debugger.instance!=null){
+                    roll = Debugger.instance.RLL.getValue();
+                    pitch = Debugger.instance.PCH.getValue();
+                    yaw = Debugger.instance.YAW.getValue();
+                }
             }
             updateUI(cData);
             try {
@@ -122,30 +134,71 @@ class Worker extends Thread {
          5 - claw - 
          */
     }
+    
+    private static class WebColor {
+        public static Color royalblue = new Color(0x4169e1);
+    }
+    
+    private static BufferedImage pfd_AI;
+    private static BufferedImage pfd_AI_mask;
+    private static BufferedImage pfd_AI_ptr;
+    private static BufferedImage pfd_AI_yaw;
+    static {
+        try {
+            pfd_AI = ImageIO.read(Worker.class.getResource("pfd_AI.png"));
+            pfd_AI_mask = ImageIO.read(Worker.class.getResource("pfd_AI_mask.png"));
+            pfd_AI_ptr = ImageIO.read(Worker.class.getResource("pfd_AI_ptr.png"));
+            pfd_AI_yaw = ImageIO.read(Worker.class.getResource("pfd_yaw.png"));
+        } catch(IOException ex) {
+            Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private void drawMeterset0(Graphics2D g){
+        g.setColor(Color.black);
+        g.fillRect(0, 0, 380, 380);
+        
+        
+        BufferedImage AI = new BufferedImage(250, 250, BufferedImage.TYPE_INT_ARGB_PRE);
+        Graphics2D aig = AI.createGraphics();
+        
+        AffineTransform aitx = AffineTransform.getRotateInstance(Math.toRadians(roll), 400, 400);
+        AffineTransformOp aiop = new AffineTransformOp(aitx, AffineTransformOp.TYPE_BICUBIC);
+        
+        aig.drawImage(aiop.filter(pfd_AI, null), 250/2-400, (int)(-275+(pitch*400)/90), null);
+        aig.drawImage(pfd_AI_mask,0,0,null);
+       
+        aitx = AffineTransform.getRotateInstance(Math.toRadians(roll), 125, 125);
+        aiop = new AffineTransformOp(aitx, AffineTransformOp.TYPE_BICUBIC);
+        aig.drawImage(aiop.filter(pfd_AI_ptr, null), 0, 0, null);
+        
+        BufferedImage YAW = new BufferedImage(250, 30, BufferedImage.TYPE_INT_ARGB_PRE);
+        Graphics2D yawg = YAW.createGraphics();
+        int yawx = (int) (yaw/360*3000+6);
+        yawg.drawImage(pfd_AI_yaw,-yawx+125,0,null);
+        yawg.drawImage(pfd_AI_yaw,-yawx+125-3000,0,null);
+        yawg.drawImage(pfd_AI_yaw,-yawx+125+3000,0,null);
+        
+        g.setColor(Color.white);
+        g.fillRect(64, 340, 252, 31);
+        g.drawImage(YAW, 65, 341,null);
+        g.setColor(Color.green);
+        g.setStroke(new BasicStroke(2));
+        g.drawLine(190, 315, 190, 356);
+        g.drawImage(AI, 65, 65, null);
+        g.setStroke(new BasicStroke(3));
+        g.setColor(Color.red);
+        g.drawRect(60, 160, 260, 60);
+    }
 
     private void updateUI(float cData[]) {
         //drawing
         {
-            Graphics2D g = (Graphics2D) parent.drawingPanel0.getGraphics();
-            
-            g.setColor(Color.black);
-            g.fillRect(0, 0, 1000, 160);
-            
-            g.setColor(Color.blue);
-            g.fillOval(10, 10, 140, 140);
-            
-            g.setColor(Color.black);
-            g.drawLine(40, 60, 120, 60);
-            g.drawLine(30, 80, 130, 80);
-            g.drawLine(40, 100, 120, 100);
+            BufferedImage frame = new BufferedImage(380, 380, BufferedImage.TYPE_INT_ARGB_PRE);
+            drawMeterset0(frame.createGraphics());
+            parent.meterset0.getGraphics().drawImage(frame, 0, 0, null);
         }
         
         if (cData != null) {
-            //System.out.println("13,15 "+cData[13]+" "+cData[15]);
-            parent.xLabel.setText("" + cData[0]);
-            parent.yLabel.setText("" + cData[1]);
-            parent.zLabel.setText("" + cData[2]);
-            parent.rzLabel.setText("" + cData[3]);
 
             
         } else {
@@ -162,9 +215,6 @@ class Worker extends Thread {
                 if(i%8==0) channelDisp.append('\n');
             }
             channelDisp.append("END}");
-            parent.channelDisp.setText(channelDisp.toString());
         }
-        
-        parent.imuLabel.setText(String.format("RLL:%f, PCH:%f", roll,pitch));
     }
 }
