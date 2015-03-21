@@ -1,0 +1,47 @@
+# Network Addresses
+Network: 10.69.69.0/24
+Hosts:
+	60-68: Commander
+	66: Preferred Commander
+	69: Rasputin
+	74: Olga
+	75: Alexei
+	76: Maria
+
+# Commander > Rasputin Table
+0 -> Controller Direction State
+	bit0: up
+	bit1: down
+	bit2: left
+	bit3: right
+	bit4: triangle
+	bit5: cross
+	bit6: square
+	bit7: circle
+1 -> Controller Misc. State
+	bit0: L1
+	bit1: L2
+	bit2: R1
+	bit3: R2
+	bit4: select
+	bit5: start
+	bit6: L3
+	bit7: R3
+2 -> Controller Left Stick x Value
+3 -> Controller Left Stick y Value
+4 -> Controller Right Stick x Value
+5 -> Controller Right Stick y Value
+6-31 -> Unassigned
+
+# Rasputin > Commander Table
+0-1 -> IMU Roll
+2-3 -> IMU Pitch
+4-5 -> IMU Yaw
+6-7 -> Pressure
+8-31 -> Unassigned
+
+# Rasputin > Ardee Table
+0-31 -> Unknown
+
+# Ardee > Rasputin Table
+0-31 -> Unknown
