@@ -12,6 +12,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -118,6 +120,15 @@ public class Display extends javax.swing.JFrame {
         loadSettings();
         createCam();
         initComponents();
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice();
+        if(gd.isFullScreenSupported()){
+            gd.setFullScreenWindow(this);
+        } else {
+            System.err.println("Full screen not supported.");
+        }
         
         if(settings.getBoolean("debugMode")){
             Debugger.main(null);
@@ -135,8 +146,7 @@ public class Display extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         mariaPanel = new JPanel();
         olgaPanel = new JPanel();
@@ -151,10 +161,8 @@ public class Display extends javax.swing.JFrame {
         setUndecorated(true);
         setPreferredSize(new Dimension(1280, 800));
         setResizable(false);
-        addKeyListener(new KeyAdapter()
-        {
-            public void keyPressed(KeyEvent evt)
-            {
+        addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent evt) {
                 formKeyPressed(evt);
             }
         });
@@ -204,6 +212,7 @@ public class Display extends javax.swing.JFrame {
     private void formKeyPressed(KeyEvent evt)//GEN-FIRST:event_formKeyPressed
     {//GEN-HEADEREND:event_formKeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_ESCAPE || evt.getKeyCode()==KeyEvent.VK_Q){
+            disconnectCam();
             dispose();
             System.exit(0);
         }
