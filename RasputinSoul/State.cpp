@@ -64,6 +64,7 @@ void State::TXRX() {
         }
         memcpy(clientState, buffer, datawidth);
         memcpy(buffer, ROVState, datawidth);
+        clientAddr.sin_port = htons(clientPort);
         if (sendto(sockfd, buffer, datawidth, 0, (struct sockaddr*) &clientAddr, addrLen) < 0) {
             // error sending
         }

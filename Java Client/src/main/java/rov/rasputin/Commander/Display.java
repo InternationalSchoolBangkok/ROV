@@ -114,8 +114,7 @@ public class Display extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         xAnalogLabel = new JLabel();
         yAnalogLabel = new JLabel();
@@ -131,6 +130,9 @@ public class Display extends javax.swing.JFrame {
         jSeparator1 = new JSeparator();
         connectCamBtn = new JButton();
         disconnectCamBtn = new JButton();
+        channelDisp = new JLabel();
+        imuLabel = new JLabel();
+        drawingPanel0 = new JPanel();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("ROV Rasputin Commander");
@@ -164,23 +166,33 @@ public class Display extends javax.swing.JFrame {
         alexeiPanel.setLayout(new BorderLayout());
 
         connectCamBtn.setText("Connect Cameras");
-        connectCamBtn.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
+        connectCamBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 connectCamBtnActionPerformed(evt);
             }
         });
 
         disconnectCamBtn.setText("Disconnect Cameras");
         disconnectCamBtn.setEnabled(false);
-        disconnectCamBtn.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
+        disconnectCamBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 disconnectCamBtnActionPerformed(evt);
             }
         });
+
+        channelDisp.setText("CHANNELs");
+        channelDisp.setToolTipText("");
+
+        imuLabel.setText("IMUs");
+
+        GroupLayout drawingPanel0Layout = new GroupLayout(drawingPanel0);
+        drawingPanel0.setLayout(drawingPanel0Layout);
+        drawingPanel0Layout.setHorizontalGroup(drawingPanel0Layout.createParallelGroup(GroupLayout.LEADING)
+            .add(0, 0, Short.MAX_VALUE)
+        );
+        drawingPanel0Layout.setVerticalGroup(drawingPanel0Layout.createParallelGroup(GroupLayout.LEADING)
+            .add(0, 160, Short.MAX_VALUE)
+        );
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -188,6 +200,7 @@ public class Display extends javax.swing.JFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
+                    .add(drawingPanel0, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jSeparator1)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(GroupLayout.LEADING)
@@ -196,13 +209,21 @@ public class Display extends javax.swing.JFrame {
                             .add(rzAnalogLabel))
                         .add(19, 19, 19)
                         .add(layout.createParallelGroup(GroupLayout.LEADING)
-                            .add(rzLabel)
-                            .add(yLabel)
+                            .add(layout.createSequentialGroup()
+                                .add(yLabel)
+                                .addPreferredGap(LayoutStyle.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(channelDisp))
                             .add(layout.createSequentialGroup()
                                 .add(xLabel)
                                 .addPreferredGap(LayoutStyle.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .add(stateLabel))
-                            .add(zLabel)))
+                            .add(layout.createSequentialGroup()
+                                .add(rzLabel)
+                                .add(0, 0, Short.MAX_VALUE))
+                            .add(layout.createSequentialGroup()
+                                .add(zLabel)
+                                .addPreferredGap(LayoutStyle.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(imuLabel))))
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(GroupLayout.LEADING)
                             .add(zAnalogLabel)
@@ -228,17 +249,21 @@ public class Display extends javax.swing.JFrame {
                 .addPreferredGap(LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(GroupLayout.BASELINE)
                     .add(yAnalogLabel)
-                    .add(yLabel))
+                    .add(yLabel)
+                    .add(channelDisp))
                 .addPreferredGap(LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(GroupLayout.BASELINE)
                     .add(zAnalogLabel)
-                    .add(zLabel))
+                    .add(zLabel)
+                    .add(imuLabel))
                 .addPreferredGap(LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(GroupLayout.BASELINE)
                     .add(rzAnalogLabel)
                     .add(rzLabel))
                 .addPreferredGap(LayoutStyle.RELATED)
                 .add(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(drawingPanel0, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
                     .add(olgaPanel, GroupLayout.PREFERRED_SIZE, 375, GroupLayout.PREFERRED_SIZE)
@@ -291,8 +316,11 @@ public class Display extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JPanel alexeiPanel;
+    public JLabel channelDisp;
     private JButton connectCamBtn;
     private JButton disconnectCamBtn;
+    public JPanel drawingPanel0;
+    public JLabel imuLabel;
     private JSeparator jSeparator1;
     private JPanel olgaPanel;
     private JLabel rzAnalogLabel;

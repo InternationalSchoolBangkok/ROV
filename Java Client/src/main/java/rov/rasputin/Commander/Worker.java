@@ -5,12 +5,13 @@
  */
 package rov.rasputin.Commander;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import rov.rasputin.Communication.ROV;
 
 /**
@@ -24,6 +25,10 @@ class Worker extends Thread {
     
     private final Display parent;
     private final Properties settings;
+    
+    private ROV rasputin;
+    
+    private float roll, pitch;
 
     public Worker(Display display, Properties settings) {
         parent = display;
@@ -39,7 +44,6 @@ class Worker extends Thread {
         float[] cData = null;
         int i = 0;
         boolean connected = false;
-        ROV rasputin = null;
         if (!skipCommunication) {
             try {
                 rasputin = new ROV(settings.getProperty("ROVAddress"),
@@ -70,6 +74,11 @@ class Worker extends Thread {
                     JOptionPane.showMessageDialog(parent, "Could not connect to control: " + e);
                 }
             }
+            if(!skipCommunication){
+                // roll(0,1)max180 pitch(2,3)max180
+                roll = (rasputin.get(0)*256+(rasputin.get(1)+128))/32768f*180;
+                pitch = (rasputin.get(2)*256+(rasputin.get(3)+128))/32768f*180;
+            }
             updateUI(cData);
             try {
                 Thread.sleep(settings.getInt("workerPeriod"));
@@ -77,17 +86,12 @@ class Worker extends Thread {
                 Logger.getLogger(Worker.class.getName()).log(Level.SEVERE, null, ex);
             }
             i++;
-            if (connected) {
+            if (connected && !skipCommunication && !skipController) {
                 int values[];
                 values = getOutput(cData);
                 for (int b = 0; b < 32 && rasputin!=null; b++) {
                     rasputin.set(b, values[b]);
-                    //System.out.print("Values["+b+"]"+" "+rasputin.get(b)+" ");
                 }
-                for (int b = 0; b < 32; b++) {
-                    System.out.print(rasputin.get(b)+" ");
-                }
-                System.out.println();
             }
         }
     }
@@ -120,18 +124,47 @@ class Worker extends Thread {
     }
 
     private void updateUI(float cData[]) {
+        //drawing
+        {
+            Graphics2D g = (Graphics2D) parent.drawingPanel0.getGraphics();
+            
+            g.setColor(Color.black);
+            g.fillRect(0, 0, 1000, 160);
+            
+            g.setColor(Color.blue);
+            g.fillOval(10, 10, 140, 140);
+            
+            g.setColor(Color.black);
+            g.drawLine(40, 60, 120, 60);
+            g.drawLine(30, 80, 130, 80);
+            g.drawLine(40, 100, 120, 100);
+        }
+        
         if (cData != null) {
-            SwingUtilities.invokeLater(() -> {
-                //System.out.println("13,15 "+cData[13]+" "+cData[15]);
-                parent.xLabel.setText("" + cData[0]);
-                parent.yLabel.setText("" + cData[1]);
-                parent.zLabel.setText("" + cData[2]);
-                parent.rzLabel.setText("" + cData[3]);
-            });
+            //System.out.println("13,15 "+cData[13]+" "+cData[15]);
+            parent.xLabel.setText("" + cData[0]);
+            parent.yLabel.setText("" + cData[1]);
+            parent.zLabel.setText("" + cData[2]);
+            parent.rzLabel.setText("" + cData[3]);
+
+            
         } else {
             if (!skipController) {
                 System.out.print("cData null");
             }
         }
+        
+        if(!skipCommunication){
+            StringBuilder channelDisp = new StringBuilder();
+            channelDisp.append('{');
+            for(int i=0; i<settings.getInt("datawidth"); ++i){
+                channelDisp.append(rasputin.get(i)).append(", ");
+                if(i%8==0) channelDisp.append('\n');
+            }
+            channelDisp.append("END}");
+            parent.channelDisp.setText(channelDisp.toString());
+        }
+        
+        parent.imuLabel.setText(String.format("RLL:%f, PCH:%f", roll,pitch));
     }
 }
