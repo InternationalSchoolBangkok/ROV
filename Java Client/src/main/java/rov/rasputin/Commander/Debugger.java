@@ -52,8 +52,7 @@ public class Debugger extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
         PCH = new javax.swing.JSlider();
@@ -62,7 +61,7 @@ public class Debugger extends javax.swing.JFrame
         jLabel3 = new javax.swing.JLabel();
         YAW = new javax.swing.JSlider();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Debugger Window");
         setAlwaysOnTop(true);
 

@@ -35,6 +35,7 @@ public class Display extends javax.swing.JFrame {
     private Worker worker;
     private Properties settings;
     private Webcam olga, alexei, maria;
+    private boolean isFullscreen = false;
     
     private void loadSettings(){
         Webcam.setDriver(new IpCamDriver());
@@ -126,6 +127,7 @@ public class Display extends javax.swing.JFrame {
                 .getDefaultScreenDevice();
         if(gd.isFullScreenSupported()){
             gd.setFullScreenWindow(this);
+            isFullscreen = true;
         } else {
             System.err.println("Full screen not supported.");
         }
@@ -215,6 +217,17 @@ public class Display extends javax.swing.JFrame {
             disconnectCam();
             dispose();
             System.exit(0);
+        } else if(evt.getKeyCode()==KeyEvent.VK_F11 || evt.getKeyCode()==KeyEvent.VK_F){
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                    .getDefaultScreenDevice();
+            if(gd.isFullScreenSupported()){
+                if(isFullscreen){
+                    gd.setFullScreenWindow(null);
+                } else {
+                    gd.setFullScreenWindow(this);
+                }
+                isFullscreen=!isFullscreen;
+            }
         }
     }//GEN-LAST:event_formKeyPressed
 
