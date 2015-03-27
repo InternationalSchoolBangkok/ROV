@@ -123,7 +123,7 @@ public class Display extends javax.swing.JFrame {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
+        /*GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice();
         if(gd.isFullScreenSupported()){
             gd.setFullScreenWindow(this);
@@ -134,7 +134,7 @@ public class Display extends javax.swing.JFrame {
         
         if(settings.getBoolean("debugMode")){
             Debugger.main(null);
-        }
+        }*/
         
         getContentPane().setBackground(Color.black);
         createAndStartWorker();
