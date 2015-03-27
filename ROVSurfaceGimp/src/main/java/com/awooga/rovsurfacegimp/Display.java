@@ -19,6 +19,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -31,6 +33,7 @@ import static java.lang.Math.pow;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.input.KeyCode;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import org.jdesktop.layout.GroupLayout;
@@ -110,12 +113,12 @@ public class Display extends javax.swing.JFrame {
         getContentPane().setBackground(Color.black);
         olgaImageHolder.setVisible(false);
         olgaImageHolder.setEnabled(false);
-        
+
         alexeiImageHolder.setVisible(false);
         alexeiImageHolder.setEnabled(false);
+        rootPane.requestFocus();
         connectCam();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
