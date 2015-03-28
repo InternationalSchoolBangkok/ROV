@@ -16,6 +16,8 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -36,45 +38,47 @@ public class Display extends javax.swing.JFrame {
     private Properties settings;
     private Webcam olga, alexei, maria;
     private boolean isFullscreen = false;
-    
-    private void loadSettings(){
+
+    private void loadSettings() {
         Webcam.setDriver(new IpCamDriver());
-        
+
         try {
             settings = new Properties();
             InputStream in = getClass().getResourceAsStream("settings.properties");
-            if(in==null) System.out.println("ERROR");
+            if (in == null) {
+                System.out.println("ERROR");
+            }
             settings.load(in);
             in.close();
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
+
     }
-    
-    private void createAndStartWorker(){
+
+    private void createAndStartWorker() {
         worker = new Worker(this, settings);
         worker.start();
     }
-    
-    private void createCam(){
-        String user=settings.getProperty("camUser");
-        String pass= settings.getProperty("camPass");
-        IpCamAuth auth = new IpCamAuth(user,pass);
-        
+
+    private void createCam() {
+        String user = settings.getProperty("camUser");
+        String pass = settings.getProperty("camPass");
+        IpCamAuth auth = new IpCamAuth(user, pass);
+
         IpCamDeviceRegistry.unregisterAll();
         String format = "http://%s/videostream.cgi?loginuse=%s&loginpas=%s";
         Dimension d = new Dimension(600, 400);
         try {
-            IpCamDeviceRegistry.register("Olga", String.format(format,settings.getProperty("olgaAddr"), user,pass), IpCamMode.PUSH, auth).setResolution(d);
-            IpCamDeviceRegistry.register("Alexei", String.format(format,settings.getProperty("alexeiAddr"), user,pass), IpCamMode.PUSH, auth).setResolution(d);
-            IpCamDeviceRegistry.register("Maria", String.format(format,settings.getProperty("mariaAddr"), user,pass), IpCamMode.PUSH, auth).setResolution(d);
-        } catch(MalformedURLException ex) {
+            IpCamDeviceRegistry.register("Olga", String.format(format, settings.getProperty("olgaAddr"), user, pass), IpCamMode.PUSH, auth).setResolution(d);
+            IpCamDeviceRegistry.register("Alexei", String.format(format, settings.getProperty("alexeiAddr"), user, pass), IpCamMode.PUSH, auth).setResolution(d);
+            IpCamDeviceRegistry.register("Maria", String.format(format, settings.getProperty("mariaAddr"), user, pass), IpCamMode.PUSH, auth).setResolution(d);
+        } catch (MalformedURLException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void connectCam(){
+
+    private void connectCam() {
         olga = Webcam.getWebcams().get(0);
         WebcamPanel subOlga = new WebcamPanel(olga);
         subOlga.setFPSDisplayed(true);
@@ -84,7 +88,7 @@ public class Display extends javax.swing.JFrame {
         olgaPanel.add(subOlga);
         olgaPanel.revalidate();
         olgaPanel.repaint();
-        
+
         alexei = Webcam.getWebcams().get(1);
         WebcamPanel subAlexei = new WebcamPanel(alexei);
         subAlexei.setFPSDisplayed(true);
@@ -94,7 +98,7 @@ public class Display extends javax.swing.JFrame {
         alexeiPanel.add(subAlexei);
         alexeiPanel.revalidate();
         alexeiPanel.repaint();
-        
+
         maria = Webcam.getWebcams().get(2);
         WebcamPanel subMaria = new WebcamPanel(maria);
         subMaria.setFPSDisplayed(true);
@@ -104,11 +108,11 @@ public class Display extends javax.swing.JFrame {
         mariaPanel.add(subMaria);
         mariaPanel.revalidate();
         mariaPanel.repaint();
-        
+
         pack();
     }
-    
-    private void disconnectCam(){
+
+    private void disconnectCam() {
         olga.close();
         alexei.close();
         maria.close();
@@ -122,20 +126,19 @@ public class Display extends javax.swing.JFrame {
         createCam();
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
+
         /*GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice();
-        if(gd.isFullScreenSupported()){
-            gd.setFullScreenWindow(this);
-            isFullscreen = true;
-        } else {
-            System.err.println("Full screen not supported.");
-        }
+         .getDefaultScreenDevice();
+         if(gd.isFullScreenSupported()){
+         gd.setFullScreenWindow(this);
+         isFullscreen = true;
+         } else {
+         System.err.println("Full screen not supported.");
+         }
         
-        if(settings.getBoolean("debugMode")){
-            Debugger.main(null);
-        }*/
-        
+         if(settings.getBoolean("debugMode")){
+         Debugger.main(null);
+         }*/
         getContentPane().setBackground(Color.black);
         createAndStartWorker();
         connectCam();
@@ -155,7 +158,7 @@ public class Display extends javax.swing.JFrame {
         alexeiPanel = new JPanel();
         meterset0 = new JPanel();
 
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("ROV Rasputin Commander");
         setBackground(new Color(0, 0, 0));
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -213,20 +216,21 @@ public class Display extends javax.swing.JFrame {
 
     private void formKeyPressed(KeyEvent evt)//GEN-FIRST:event_formKeyPressed
     {//GEN-HEADEREND:event_formKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_ESCAPE || evt.getKeyCode()==KeyEvent.VK_Q){
+        //lol kola this code never works; event is never called when I press esc
+        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE || evt.getKeyCode() == KeyEvent.VK_Q) {
             disconnectCam();
             dispose();
             System.exit(0);
-        } else if(evt.getKeyCode()==KeyEvent.VK_F11 || evt.getKeyCode()==KeyEvent.VK_F){
+        } else if (evt.getKeyCode() == KeyEvent.VK_F11 || evt.getKeyCode() == KeyEvent.VK_F) {
             GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
                     .getDefaultScreenDevice();
-            if(gd.isFullScreenSupported()){
-                if(isFullscreen){
+            if (gd.isFullScreenSupported()) {
+                if (isFullscreen) {
                     gd.setFullScreenWindow(null);
                 } else {
                     gd.setFullScreenWindow(this);
                 }
-                isFullscreen=!isFullscreen;
+                isFullscreen = !isFullscreen;
             }
         }
     }//GEN-LAST:event_formKeyPressed
@@ -259,4 +263,3 @@ public class Display extends javax.swing.JFrame {
     private JPanel olgaPanel;
     // End of variables declaration//GEN-END:variables
 }
-

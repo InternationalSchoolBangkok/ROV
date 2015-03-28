@@ -2,8 +2,8 @@
 
 #define dataWidth 32
 #define motorNumber 8
-int motorMap[8] = {8, 4, 9, 6, 5, 7, 2, 3}; //map to figure out which pin goes to which motor
-bool reverseMap[8] = {true, false, true, false, false, false, true, true}; //map to find which motors to revers
+int motorMap[8] = {6, 7, 9, 8, 3, 4, 2, 5}; //map to figure out which pin goes to which motor
+bool reverseMap[8] = {true, false, false, false, false, false, true, false}; //map to find which motors to revers
 Servo mots[motorNumber];
 
 void setup() {
