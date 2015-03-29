@@ -45,3 +45,26 @@ Hosts:
 
 # Ardee > Rasputin Table
 0-31 -> Unknown
+
+# Controller Components Mapping
+0 -> Left Stick x Value
+1 -> Left Stick y Value
+2 -> Right Stick x Value
+3 -> Right Stick y Value
+4 -> Select
+5 -> L3
+6 -> R3
+7 -> Start
+8 -> Up
+9 -> Right
+10 -> Down
+11 -> Left
+12 -> L2
+13 -> R3
+14 -> L1
+15 -> R1
+16 -> Triangle
+17 -> Circle
+18 -> Cross
+19 -> Square
+20 -> PS3

@@ -4,7 +4,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>CNS.h</itemPath>
       <itemPath>IMU.h</itemPath>
+      <itemPath>PID.h</itemPath>
       <itemPath>Serial.h</itemPath>
       <itemPath>State.h</itemPath>
       <itemPath>Thread.h</itemPath>
@@ -16,8 +18,10 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>CNS.cpp</itemPath>
       <itemPath>IMU.cpp</itemPath>
       <itemPath>Main.cpp</itemPath>
+      <itemPath>PID.cpp</itemPath>
       <itemPath>Serial.cpp</itemPath>
       <itemPath>State.cpp</itemPath>
       <itemPath>Thread.cpp</itemPath>
@@ -38,7 +42,7 @@
   <confs>
     <conf name="Debug" type="1">
       <toolsSet>
-        <compilerSet>GNU|GNU</compilerSet>
+        <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
@@ -47,11 +51,19 @@
           <commandLine>-pthread</commandLine>
         </ccTool>
       </compileType>
+      <item path="CNS.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CNS.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="IMU.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="IMU.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="PID.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="PID.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Serial.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -86,11 +98,19 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="CNS.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CNS.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="IMU.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="IMU.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="PID.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="PID.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Serial.cpp" ex="false" tool="1" flavor2="0">
       </item>
