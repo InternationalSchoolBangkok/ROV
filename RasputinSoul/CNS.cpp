@@ -12,7 +12,7 @@
 
 #define RUNRATE 40
 
-CNS::CNS(State* rov, Serial* ardee) : rov(rov), ardee(ardee) {
+CNS::CNS(State* rov, Serial* ardee, IMU* imu) : rov(rov), ardee(ardee), imu(imu) {
 
 }
 
@@ -50,11 +50,11 @@ void CNS::syncIMU() {
     int ys = yaw*32768;
     
     rov->set(0,roll/256);
-    rov->set(1,roll%256-128);
+    rov->set(1,(int) roll%256-128);
     rov->set(2,pitch/256);
-    rov->set(3,pitch%256-128);
+    rov->set(3,(int)pitch%256-128);
     rov->set(4,yaw/256);
-    rov->set(5,yaw%256-128);
+    rov->set(5,(int)yaw%256-128);
 }
 
 void CNS::syncCommander() {
@@ -120,7 +120,7 @@ void* CNS::run(){
         //pid gain needs readjustments cuz not guaranteed -1<x<1
         
         for(int i=0;i<8;++i){
-            motor[i]=min(max(motorPower[i],-128),127);
+            motor[i]=min(max((int)motorPower[i],-128),127);
             //send motor powers to ardee
         }
         

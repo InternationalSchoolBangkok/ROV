@@ -21,9 +21,9 @@ public:
     void enableI(bool enable);
     void enableD(bool enable);
 private:
-    bool doP=true,doI=true,doD=true;
+    bool doP,doI,doD;
     double Kp,Ki,Kd;
-    double PV=0, SP=0, previousError=0, integral=0;
+    double PV, SP, previousError, integral;
 };
 
 #endif	/* PID_H */
