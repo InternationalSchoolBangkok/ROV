@@ -179,10 +179,10 @@ class Worker extends Thread {
         if(controllerValues[6]>0.5) intMappedValues[1]+=1;
         if(intMappedValues[1]>=128) intMappedValues[1]-=256;
         
-        intMappedValues[2]=(int)(controllerValues[0]*128);
-        intMappedValues[3]=(int)(controllerValues[1]*128);
-        intMappedValues[4]=(int)(controllerValues[2]*128);
-        intMappedValues[5]=(int)(controllerValues[3]*128);
+        intMappedValues[2]=(int)(controllerValues[0]*127);
+        intMappedValues[3]=(int)(controllerValues[1]*127);
+        intMappedValues[4]=(int)(controllerValues[2]*127);
+        intMappedValues[5]=(int)(controllerValues[3]*127);
         
         return intMappedValues;
     }

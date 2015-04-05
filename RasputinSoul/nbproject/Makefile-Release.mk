@@ -35,8 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/CNS.o \
 	${OBJECTDIR}/IMU.o \
 	${OBJECTDIR}/Main.o \
+	${OBJECTDIR}/PID.o \
 	${OBJECTDIR}/Serial.o \
 	${OBJECTDIR}/State.o \
 	${OBJECTDIR}/Thread.o
@@ -66,6 +68,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rasputinsoul: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/rasputinsoul ${OBJECTFILES} ${LDLIBSOPTIONS}
 
+${OBJECTDIR}/CNS.o: CNS.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/CNS.o CNS.cpp
+
 ${OBJECTDIR}/IMU.o: IMU.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
@@ -75,6 +82,11 @@ ${OBJECTDIR}/Main.o: Main.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Main.o Main.cpp
+
+${OBJECTDIR}/PID.o: PID.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/PID.o PID.cpp
 
 ${OBJECTDIR}/Serial.o: Serial.cpp 
 	${MKDIR} -p ${OBJECTDIR}
