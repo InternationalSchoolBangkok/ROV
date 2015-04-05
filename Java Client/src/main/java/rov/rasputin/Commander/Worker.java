@@ -108,58 +108,83 @@ class Worker extends Thread {
         }
     }
 
-    private int[] getOutput(float cData[]) {
-        //map the controller input to the actual output
-        int values[] = new int[32];
-        int mots[] = calcMotors(cData[0], cData[1], cData[2]);
-        values[0] = mots[0];
-        values[1] = mots[1];
-        values[2] = mots[2];
-        values[3] = mots[3];
-        //updown
-        int vert = (cData[15] == 1f) ? 60 : (cData[13] == 1f) ? -60 : 0;//limit up down to only ±60
-        values[4] = vert;
-        values[5] = vert;
-        values[6] = vert;
-        values[7] = vert;
-        //values[5] = (cData[14] == 1f) ? 127 : (cData[12] == 1f) ? -127 : 0;
-        return values;
+    private int[] getOutput(float controllerValues[]) {
         /*
-         outChannel# - function - cData
-         0 - straife - 0
-         1 - forward/back - 1
-         2 - Yaw - 3
-         3 - NA - NA
-         4 - UP/Down - 13/15
-         5 - claw - 
-         */
-    }
-
-    public int[] calcMotors(double x, double y, double yaw) {
-        y *= -1; //flip y axis
-        /* 
-         Motor Layout
-         1// \\2
-         ROV
-         4\\ //3           
-         */
-        //System.out.println("x, y: "+x+" "+y);
-        double mots[]  = new double[4];
-        mots[0] = (-y - x) * 63.5f;
-        mots[1] = (x - y) * 63.5f;
-        mots[2] = (x + y) * 63.5f;
-        mots[3] = (y - x) * 63.5f;
-        float yawLimit = 50;
-        mots[0] += yaw*-yawLimit;
-        mots[1] += yaw*yawLimit;
-        mots[2] += yaw*-yawLimit;
-        mots[3] += yaw*yawLimit;
-        for(int i = 0;i<mots.length;i++){
-            mots[i] = (mots[i]>127)?127:(mots[i]<-127)?-127:mots[i];//limit mots output
-        }
-        System.out.println("m1: " + mots[0] + " m2: " + mots[1] + " m3: " + mots[2] + " m4: " + mots[3]);
-        int result[] = {(int) mots[0], (int) mots[1], (int) mots[2], (int) mots[3]};
-        return result;
+        # Commander > Rasputin Table
+0 -> Controller Direction State
+	bit0: up
+	bit1: down
+	bit2: left
+	bit3: right
+	bit4: triangle
+	bit5: cross
+	bit6: square
+	bit7: circle
+1 -> Controller Misc. State
+	bit0: L1
+	bit1: L2
+	bit2: R1
+	bit3: R2
+	bit4: select
+	bit5: start
+	bit6: L3
+	bit7: R3
+2 -> Controller Left Stick x Value
+3 -> Controller Left Stick y Value
+4 -> Controller Right Stick x Value
+5 -> Controller Right Stick y Value
+        
+     # Controller Components Mapping
+0 -> Left Stick x Value
+1 -> Left Stick y Value
+2 -> Right Stick x Value
+3 -> Right Stick y Value
+4 -> Select
+5 -> L3
+6 -> R3
+7 -> Start
+8 -> Up
+9 -> Right
+10 -> Down
+11 -> Left
+12 -> L2
+13 -> R2
+14 -> L1
+15 -> R1
+16 -> Triangle
+17 -> Circle
+18 -> Cross
+19 -> Square
+20 -> PS3   
+        */
+        int []intMappedValues = new int[32];
+        
+        if(controllerValues[8]>0.5) intMappedValues[0]+=128;
+        if(controllerValues[10]>0.5) intMappedValues[0]+=64;
+        if(controllerValues[11]>0.5) intMappedValues[0]+=32;
+        if(controllerValues[9]>0.5) intMappedValues[0]+=16;
+        if(controllerValues[16]>0.5) intMappedValues[0]+=8;
+        if(controllerValues[18]>0.5) intMappedValues[0]+=4;
+        if(controllerValues[19]>0.5) intMappedValues[0]+=2;
+        if(controllerValues[17]>0.5) intMappedValues[0]+=1;
+        if(intMappedValues[0]>=128) intMappedValues[0]-=256;
+        
+        if(controllerValues[14]>0.5) intMappedValues[1]+=128;
+        if(controllerValues[12]>0.5) intMappedValues[1]+=64;
+        if(controllerValues[15]>0.5) intMappedValues[1]+=32;
+        if(controllerValues[13]>0.5) intMappedValues[1]+=16;
+        if(controllerValues[4]>0.5) intMappedValues[1]+=8;
+        if(controllerValues[7]>0.5) intMappedValues[1]+=4;
+        if(controllerValues[5]>0.5) intMappedValues[1]+=2;
+        if(controllerValues[6]>0.5) intMappedValues[1]+=1;
+        if(intMappedValues[1]>=128) intMappedValues[1]-=256;
+        
+        intMappedValues[2]=(int)(controllerValues[0]*128);
+        intMappedValues[3]=(int)(controllerValues[1]*128);
+        intMappedValues[4]=(int)(controllerValues[2]*128);
+        intMappedValues[5]=(int)(controllerValues[3]*128);
+        
+        return intMappedValues;
     }
 
     private static class WebColor {
