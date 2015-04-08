@@ -9,6 +9,7 @@
 #include <time.h>
 #include "PID.h"
 #include <math.h>
+#include <bitset>
 
 #define RUNRATE 40
 
@@ -61,6 +62,10 @@ void CNS::syncCommander() {
     ly = -rov->get(3) / 128.0;
     rx = rov->get(4) / 128.0;
     ry = -rov->get(5) / 128.0;
+    char got = rov->get(1);
+    bitset<8> bs(got);
+    l1 = bs[7]==true;
+    l2 = bs[6]==true;
 }
 
 long getMicrotime() {
@@ -118,7 +123,14 @@ void* CNS::run() {
             motor[i] = min(max((int) motorPower[i], -128), 127);
             ardee->set(i, motor[i]);
             //send motor powers to ardee
+        }//convert float receiver over serial back to float
+        ardee->set(8,l2?1:(l1?-1:0));//claw setting
+        Bytes2float btf;
+        for(int i=0;i<4;i++){
+            btf.c[i]=ardee->get(i);
         }
-        usleep(sleep);
+        depth = btf.f;
+        usleep(sleep);    
     }
 }
+

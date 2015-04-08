@@ -23,13 +23,19 @@ private:
     State* rov;
     Serial* ardee;
     IMU* imu;
-    
+
     float pitch, roll, yaw;
+    float depth;
     signed char motor[8];
-    float lx,ly,rx,ry;
-    
+    float lx, ly, rx, ry;
+    bool l1,l2;
+
     void syncIMU();
     void syncCommander();
+    union Bytes2float {
+        float f;
+        unsigned char c[0];
+    };
 };
 
 #endif	/* CNS_H */
