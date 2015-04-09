@@ -64,8 +64,11 @@ void CNS::syncCommander() {
     ry = -rov->get(5) / 128.0;
     char got = rov->get(1);
     bitset<8> bs(got);
-    l1 = bs[7]==true;
-    l2 = bs[6]==true;
+    l1 = bs[7] == true;
+    l2 = bs[6] == true;
+    //heightPID->setPIDGainz(rov->get(23), rov->get(24), rov->get(25));
+    //rollPID->setPIDGainz(rov->get(26), rov->get(27), rov->get(28));
+    //pitchPID->setPIDGainz(rov->get(29), rov->get(30), rov->get(31));
 }
 
 long getMicrotime() {
@@ -85,8 +88,9 @@ void* CNS::run() {
     long currentt = getMicrotime();
     long dt = currentt - lastt;
 
-    PID* rollPID = new PID(3, 0, 0);
-    PID* pitchPID = new PID(3, 0, 0);
+    rollPID = new PID(3, 0, 0);
+    pitchPID = new PID(3, 0, 0);
+    heightPID = new PID(0,0,0);
     //PID* heightPID = new PID(1.1,0.7,1.0);
 
     while (true) {
@@ -124,13 +128,13 @@ void* CNS::run() {
             ardee->set(i, motor[i]);
             //send motor powers to ardee
         }//convert float receiver over serial back to float
-        ardee->set(8,l2?1:(l1?-1:0));//claw setting
+        ardee->set(8, l2 ? 1 : (l1 ? -1 : 0)); //claw setting
         Bytes2float btf;
-        for(int i=0;i<4;i++){
-            btf.c[i]=ardee->get(i);
+        for (int i = 0; i < 4; i++) {
+            btf.c[i] = ardee->get(i);
         }
         depth = btf.f;
-        usleep(sleep);    
+        usleep(sleep);
     }
 }
 

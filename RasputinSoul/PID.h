@@ -20,6 +20,7 @@ public:
     void enableP(bool enable);
     void enableI(bool enable);
     void enableD(bool enable);
+    void setPIDGainz(double Kp,double Ki,double Kd);
 private:
     bool doP,doI,doD;
     double Kp,Ki,Kd;

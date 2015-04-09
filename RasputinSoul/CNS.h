@@ -12,6 +12,7 @@
 #include "Thread.h"
 #include "Serial.h"
 #include "State.h"
+#include "PID.h"
 
 class CNS : public Thread {
 public:
@@ -23,7 +24,9 @@ private:
     State* rov;
     Serial* ardee;
     IMU* imu;
-
+    PID* rollPID;
+    PID* pitchPID;
+    PID* heightPID;
     float pitch, roll, yaw;
     float depth;
     signed char motor[8];

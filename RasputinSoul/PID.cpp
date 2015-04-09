@@ -39,8 +39,12 @@ void PID::enableI(bool enable) {
 void PID::enableP(bool enable) {
     doP = enable;
 }
-
-
+void PID::setPIDGainz(double Kp, double Ki, double Kd) {
+    this->Kp = Kp;
+    this->Ki = Kp;
+    this->Kd = Kp;
+    integral = 0; 
+}
 
 double PID::step(double dt) {
     double error = SP-PV;
