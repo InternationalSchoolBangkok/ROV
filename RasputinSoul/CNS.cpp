@@ -88,8 +88,8 @@ void* CNS::run() {
     long currentt = getMicrotime();
     long dt = currentt - lastt;
 
-    rollPID = new PID(3, 0, 0);
-    pitchPID = new PID(3, 0, 0);
+    rollPID = new PID(0, 0, 0);//3
+    pitchPID = new PID(0, 0, 0);
     heightPID = new PID(0,0,0);
     //PID* heightPID = new PID(1.1,0.7,1.0);
 
