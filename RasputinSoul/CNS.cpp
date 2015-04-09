@@ -66,6 +66,9 @@ void CNS::syncCommander() {
     bitset<8> bs(got);
     l1 = bs[7] == true;
     l2 = bs[6] == true;
+    r1 = bs[5] == true;
+    r2 = bs[4] == true;
+    start = bs[2] == true;
     //heightPID->setPIDGainz(rov->get(23), rov->get(24), rov->get(25));
     //rollPID->setPIDGainz(rov->get(26), rov->get(27), rov->get(28));
     //pitchPID->setPIDGainz(rov->get(29), rov->get(30), rov->get(31));
@@ -88,9 +91,9 @@ void* CNS::run() {
     long currentt = getMicrotime();
     long dt = currentt - lastt;
 
-    rollPID = new PID(0, 0, 0);//3
+    rollPID = new PID(0, 0, 0); //3
     pitchPID = new PID(0, 0, 0);
-    heightPID = new PID(0,0,0);
+    heightPID = new PID(20, 0, 0);
     //PID* heightPID = new PID(1.1,0.7,1.0);
 
     while (true) {
@@ -114,14 +117,26 @@ void* CNS::run() {
 
         rollPID->setPV(roll);
         pitchPID->setPV(pitch);
+        heightPID->setPV(depth);
+        if (r1) {
+            heightPID->setSP(depth - 0.02);
+            //cout << "Depth: "<<depth<<" SPTO " << depth-0.01<<endl;
+        } else if (r2) {
+            heightPID->setSP(depth + 0.02);
+            cout << "Depth: "<<depth<<" SPTO " << depth-0.01<<endl;
+        }
+        if (start) {
+            heightPID->setSP(depth);
+        }
         float rollo = rollPID->step(dt);
         float pitcho = pitchPID->step(dt);
+        float heighto = heightPID->step(dt);
         //calculation for height needed
 
-        motorPower[4] = (rollo + pitcho) * 128;
-        motorPower[5] = (-rollo + pitcho) * 128;
-        motorPower[6] = (-rollo - pitcho) * 128;
-        motorPower[7] = (rollo - pitcho) * 128;
+        motorPower[4] = (rollo + pitcho - heighto) * 128;
+        motorPower[5] = (-rollo + pitcho - heighto) * 128;
+        motorPower[6] = (-rollo - pitcho - heighto) * 128;
+        motorPower[7] = (rollo - pitcho - heighto) * 128;
         //pid gain needs readjustments cuz not guaranteed -1<x<1
         for (int i = 0; i < 8; ++i) {
             motor[i] = min(max((int) motorPower[i], -128), 127);
@@ -129,11 +144,18 @@ void* CNS::run() {
             //send motor powers to ardee
         }//convert float receiver over serial back to float
         ardee->set(8, l2 ? 1 : (l1 ? -1 : 0)); //claw setting
-        Bytes2float btf;
+        /*Bytes2float btf;
         for (int i = 0; i < 4; i++) {
             btf.c[i] = ardee->get(i);
         }
-        depth = btf.f;
+        depth = btf.f;*/
+        char bytes[3];
+        for (int i = 0; i < 4; i++) {
+            bytes[i] = ardee->get(i);
+        }
+        float *fp = (float*)bytes;
+        depth = *fp;
+        cout<<depth<<endl;
         usleep(sleep);
     }
 }

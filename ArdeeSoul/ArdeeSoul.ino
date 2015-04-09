@@ -33,7 +33,7 @@ void loop() {
       Serial.read();//read away remaining data
     }
     //respond to raspi with 32 data and a \n
-    byte bytes[4];
+    byte bytes[3];
     memcpy(bytes, (byte *)&depth, 4);
     for (int i = 0; i < 4; i++) {
       Serial.write(bytes[i]);

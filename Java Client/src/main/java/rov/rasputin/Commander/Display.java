@@ -6,18 +6,21 @@
 package rov.rasputin.Commander;
 
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamImageTransformer;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.ds.ipcam.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -90,6 +93,19 @@ public class Display extends javax.swing.JFrame {
         olgaPanel.repaint();
 
         alexei = Webcam.getWebcams().get(1);
+        alexei.setImageTransformer(new WebcamImageTransformer() {
+            @Override
+            public BufferedImage transform(BufferedImage image) {
+                int w = image.getWidth();
+                int h = image.getHeight();
+                BufferedImage modified = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+                Graphics2D g2 = modified.createGraphics();
+                g2.drawImage(image, w, h, -w, -h, null);
+                g2.dispose();
+                modified.flush();
+                return modified;
+            }
+        });
         WebcamPanel subAlexei = new WebcamPanel(alexei);
         subAlexei.setFPSDisplayed(true);
         subAlexei.setDisplayDebugInfo(true);
@@ -164,7 +180,6 @@ public class Display extends javax.swing.JFrame {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         setName("rovCommander"); // NOI18N
         setUndecorated(true);
-        setPreferredSize(new Dimension(1280, 800));
         setResizable(false);
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent evt) {
@@ -263,3 +278,4 @@ public class Display extends javax.swing.JFrame {
     private JPanel olgaPanel;
     // End of variables declaration//GEN-END:variables
 }
+
