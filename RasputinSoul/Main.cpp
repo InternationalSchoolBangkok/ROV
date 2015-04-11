@@ -17,7 +17,6 @@
 
 using namespace std;
 
-
 /*
  * 
  */
@@ -25,13 +24,13 @@ int main(int argc, char** argv) {
     State *rov = new State(BANDWIDTH, NETPORT, NETPORT);
     Serial* ardee = new Serial(BANDWIDTH);
     IMU* imu = new IMU(BAUDRATE);
-    
-    Thread* cns = new CNS(rov,ardee,imu);
-    
-    
+
+    Thread* cns = new CNS(rov, ardee, imu);
+
+
     rov->startTXRX();
-    
+
     cns->start();
-    
+
     pthread_exit(0);
 }

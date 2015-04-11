@@ -38,7 +38,7 @@ Serial::sendReceive() {
         if (searchForCharSeq(buf, magicChars, 4, 0, sizeof (buf)) != dataWidth) {//if 8=D\n is not at end
             tcflush(uart0_filestream, TCIOFLUSH); //clear port driver's buffer if data not what we want
         }
-        memcpy(fromArdee,buf,dataWidth+4);
+        memcpy(fromArdee, buf, dataWidth + 4);
         //printing of from ardee
         /*cout << "From Ardee: " << flush;
         for (int i = 0; i<dataWidth+4; i++) {

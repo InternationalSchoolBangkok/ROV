@@ -31,7 +31,7 @@ typedef struct {
 
 class IMU {
 private:
-    double initTime; 
+    double initTime;
     unsigned char headerSeq[3];
     int uart0_filestream;
     struct termios options;
@@ -41,9 +41,9 @@ private:
     int channels;
     void tableUpdater();
     static void *staticUpdater(void *args);
-    void appendBuffers(unsigned char[],int,unsigned char[],int);
-    void clearUnsignedCharArray(unsigned char[],int);
-    int searchForCharSeq(unsigned char[],unsigned char[],int,int,int);
+    void appendBuffers(unsigned char[], int, unsigned char[], int);
+    void clearUnsignedCharArray(unsigned char[], int);
+    int searchForCharSeq(unsigned char[], unsigned char[], int, int, int);
     pthread_t tableUpdaterThread;
     bool doUpdate;
     int cursor;
@@ -52,7 +52,7 @@ private:
     float yaw;
 public:
     IMU(int);
-    bool spew(unsigned char[],int);
+    bool spew(unsigned char[], int);
     void printSerialBuffer();
     void closeSerial();
     void getSpew(unsigned char[]);

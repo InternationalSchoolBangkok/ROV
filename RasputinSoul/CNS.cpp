@@ -45,16 +45,21 @@ void CNS::syncIMU() {
     pitch = scaleFloat(imu->getPitch(), -168.800003, 165.490005);
     roll = scaleFloat(imu->getRoll(), -341.869995, 341.970001);
     yaw = scaleFloat(imu->getYaw(), -360, 360);
+    
     int ps = pitch * 32768;
     int rs = roll * 32768;
     int ys = yaw * 32768;
+    int hs = scaleFloat(depth,0,5) * 32768;
+    
 
-    rov->set(0, roll / 256);
-    rov->set(1, (int) roll % 256 - 128);
-    rov->set(2, pitch / 256);
-    rov->set(3, (int) pitch % 256 - 128);
-    rov->set(4, yaw / 256);
-    rov->set(5, (int) yaw % 256 - 128);
+    rov->set(0, rs / 256);
+    rov->set(1, (int) rs % 256 - 128);
+    rov->set(2, ps / 256);
+    rov->set(3, (int) ps % 256 - 128);
+    rov->set(4, ys / 256);
+    rov->set(5, (int) ys % 256 - 128);
+    rov->set(6, hs / 256);
+    rov->set(7, (int) hs % 256 - 128);
 }
 
 void CNS::syncCommander() {
@@ -64,11 +69,14 @@ void CNS::syncCommander() {
     ry = -rov->get(5) / 128.0;
     char got = rov->get(1);
     bitset<8> bs(got);
-    l1 = bs[7] == true;
-    l2 = bs[6] == true;
-    r1 = bs[5] == true;
-    r2 = bs[4] == true;
-    start = bs[2] == true;
+    l1 = bs[7];
+    l2 = bs[6];
+    r1 = bs[5];
+    r2 = bs[4];
+    start = bs[2];
+    bitset<8> bs2(rov->get(0));
+    circle = bs2[0];
+    cross = bs2[2];
     //heightPID->setPIDGainz(rov->get(23), rov->get(24), rov->get(25));
     //rollPID->setPIDGainz(rov->get(26), rov->get(27), rov->get(28));
     //pitchPID->setPIDGainz(rov->get(29), rov->get(30), rov->get(31));
@@ -91,13 +99,15 @@ void* CNS::run() {
     long currentt = getMicrotime();
     long dt = currentt - lastt;
 
-    rollPID = new PID(0, 0, 0); //3
-    pitchPID = new PID(0, 0, 0);
-    heightPID = new PID(20, 0, 0);
+    rollPID = new PID(8, 0, 0); //3
+    pitchPID = new PID(4, 0, 0);
+    heightPID = new PID(20,0,0);//new PID(20, 1, 5);
+    
     //PID* heightPID = new PID(1.1,0.7,1.0);
-
+    int i=0;
     while (true) {
-
+        
+        i++;
         syncIMU();
         syncCommander();
 
@@ -112,31 +122,57 @@ void* CNS::run() {
 
         // time calc
         currentt = getMicrotime();
-        dt = currentt - lastt;
+        dt = (currentt - lastt)/1000000.0;
         lastt = currentt;
 
         rollPID->setPV(roll);
         pitchPID->setPV(pitch);
         heightPID->setPV(depth);
-        if (r1) {
-            heightPID->setSP(depth - 0.02);
-            //cout << "Depth: "<<depth<<" SPTO " << depth-0.01<<endl;
-        } else if (r2) {
-            heightPID->setSP(depth + 0.02);
-            cout << "Depth: "<<depth<<" SPTO " << depth-0.01<<endl;
-        }
-        if (start) {
+
+        if (circle) {
+            rollPID->enablePID(false);
+            pitchPID->enablePID(false);
+            heightPID->enablePID(false);
+        } else if (cross) {
+            rollPID->enablePID(true);
+            pitchPID->enablePID(true);
+            heightPID->enablePID(true);
             heightPID->setSP(depth);
         }
+
         float rollo = rollPID->step(dt);
         float pitcho = pitchPID->step(dt);
         float heighto = heightPID->step(dt);
         //calculation for height needed
 
+        if (r1) {
+            heighto = -.5;
+            heightPID->setSP(depth);
+        } else if (r2) {
+            heighto = .5;
+            heightPID->setSP(depth);
+        } else {
+
+        }
+        if(i%5==0){
+            printf("R:%.5f\tP:%.5f\tH:%.5f\tSum:%.5f\tD:%.5f\n",rollo,pitcho,
+                    heighto, rollo+pitcho+heighto,depth);
+        }
         motorPower[4] = (rollo + pitcho - heighto) * 128;
         motorPower[5] = (-rollo + pitcho - heighto) * 128;
         motorPower[6] = (-rollo - pitcho - heighto) * 128;
         motorPower[7] = (rollo - pitcho - heighto) * 128;
+
+
+
+
+
+        if (start) {
+            heightPID->setSP(depth);
+        }
+
+
+
         //pid gain needs readjustments cuz not guaranteed -1<x<1
         for (int i = 0; i < 8; ++i) {
             motor[i] = min(max((int) motorPower[i], -128), 127);
@@ -153,9 +189,8 @@ void* CNS::run() {
         for (int i = 0; i < 4; i++) {
             bytes[i] = ardee->get(i);
         }
-        float *fp = (float*)bytes;
+        float *fp = (float*) bytes;
         depth = *fp;
-        cout<<depth<<endl;
         usleep(sleep);
     }
 }

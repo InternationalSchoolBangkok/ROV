@@ -113,11 +113,11 @@ public class Matumbeicholas extends javax.swing.JFrame {
 
         @Override
         public void run() {
-            reset();
+            //reset();
             
             int oy;
             double yscale;
-            int y=0;
+            double y=0;
             
             while(true){
                 if(gx>panel.getWidth()){
@@ -127,7 +127,7 @@ public class Matumbeicholas extends javax.swing.JFrame {
                 }
                 
                 oy = panel.getHeight()/2;
-                yscale = panel.getHeight()/resY;
+                yscale = panel.getHeight()/(double)resY;
                 
                 g.setColor(Color.white);
                 g.drawLine(gx, 0, gx, oy*2);
@@ -143,7 +143,7 @@ public class Matumbeicholas extends javax.swing.JFrame {
                         y = (int) integral;
                         break;
                     case 2:
-                        y = rasputin.get(channel)-previousValue;
+                        y = (rasputin.get(channel)-previousValue)/(resX/1000d);
                         previousValue = rasputin.get(channel);
                         break;
                 }
@@ -407,8 +407,11 @@ public class Matumbeicholas extends javax.swing.JFrame {
 
     private void setBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBtnActionPerformed
         for(int i=0;i<32;i++){
-            rasputin.set(i, (Integer) dtm.getValueAt(i, 3));
+            int val = (Byte) dtm.getValueAt(i, 3);
+            rasputin.set(i, val);
+            System.out.printf("%d=%d,",i,val);
         }
+        System.out.println();
     }//GEN-LAST:event_setBtnActionPerformed
 
     private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed

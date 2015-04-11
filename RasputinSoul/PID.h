@@ -13,17 +13,18 @@ public:
     PID(double Kp, double Ki, double Kd);
     PID(const PID& orig);
     virtual ~PID();
-    
+
     void setPV(double value);
     void setSP(double value);
     double step(double dt);
     void enableP(bool enable);
     void enableI(bool enable);
     void enableD(bool enable);
-    void setPIDGainz(double Kp,double Ki,double Kd);
+    void enablePID(bool enable);
+    void setPIDGainz(double Kp, double Ki, double Kd);
 private:
-    bool doP,doI,doD;
-    double Kp,Ki,Kd;
+    bool doP, doI, doD;
+    double Kp, Ki, Kd;
     double PV, SP, previousError, integral;
 };
 
