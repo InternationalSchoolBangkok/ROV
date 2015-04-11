@@ -93,7 +93,7 @@ public class Display extends javax.swing.JFrame {
         olgaPanel.repaint();
 
         alexei = Webcam.getWebcams().get(1);
-        alexei.setImageTransformer(new WebcamImageTransformer() {
+        /*alexei.setImageTransformer(new WebcamImageTransformer() {
             @Override
             public BufferedImage transform(BufferedImage image) {
                 int w = image.getWidth();
@@ -105,7 +105,7 @@ public class Display extends javax.swing.JFrame {
                 modified.flush();
                 return modified;
             }
-        });
+        });*/
         WebcamPanel subAlexei = new WebcamPanel(alexei);
         subAlexei.setFPSDisplayed(true);
         subAlexei.setDisplayDebugInfo(true);
@@ -232,7 +232,7 @@ public class Display extends javax.swing.JFrame {
     private void formKeyPressed(KeyEvent evt)//GEN-FIRST:event_formKeyPressed
     {//GEN-HEADEREND:event_formKeyPressed
         //lol kola this code never works; event is never called when I press esc
-        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE || evt.getKeyCode() == KeyEvent.VK_Q) {
+        /*if (evt.getKeyCode() == KeyEvent.VK_ESCAPE || evt.getKeyCode() == KeyEvent.VK_Q) {
             disconnectCam();
             dispose();
             System.exit(0);
@@ -247,7 +247,7 @@ public class Display extends javax.swing.JFrame {
                 }
                 isFullscreen = !isFullscreen;
             }
-        }
+        }*/
     }//GEN-LAST:event_formKeyPressed
 
     /**
