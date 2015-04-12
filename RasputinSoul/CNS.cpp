@@ -110,6 +110,7 @@ void* CNS::run() {
     heightPID->enablePID(false);
     //PID* heightPID = new PID(1.1,0.7,1.0);
     int i = 0;
+    int startBeginI = 0;
     bool clawLocked = false;
     while (true) {
 
@@ -156,6 +157,17 @@ void* CNS::run() {
             clawVal = 0;
             clawLocked = false;
         }
+        if (start) {
+            if (i - startBeginI == i) {
+                //if first time
+                startBeginI = i;
+            } else if (i - startBeginI >= RUNRATE*5) {
+                //if held down for 5 seconds power off raspi
+                system("sudo poweroff");
+            } 
+        } else {
+            startBeginI = 0;
+        }
         float rollo = rollPID->step(dt);
         float pitcho = pitchPID->step(dt);
         float heighto = heightPID->step(dt);
@@ -167,8 +179,6 @@ void* CNS::run() {
         } else if (r2) {
             heighto = 1;
             heightPID->setSP(depth);
-        } else {
-
         }
         if (i % 5 == 0) {
             printf("R:%.5f\tP:%.5f\tH:%.5f\tSum:%.5f\tD:%.5f\n", rollo, pitcho,
