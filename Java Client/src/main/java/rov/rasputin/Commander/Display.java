@@ -83,17 +83,7 @@ public class Display extends javax.swing.JFrame {
 
     private void connectCam() {
         olga = Webcam.getWebcams().get(0);
-        WebcamPanel subOlga = new WebcamPanel(olga);
-        subOlga.setFPSDisplayed(true);
-        subOlga.setDisplayDebugInfo(true);
-        subOlga.setFPSLimit(60);
-        olgaPanel.removeAll();
-        olgaPanel.add(subOlga);
-        olgaPanel.revalidate();
-        olgaPanel.repaint();
-
-        alexei = Webcam.getWebcams().get(1);
-        /*alexei.setImageTransformer(new WebcamImageTransformer() {
+        olga.setImageTransformer(new WebcamImageTransformer() {
             @Override
             public BufferedImage transform(BufferedImage image) {
                 int w = image.getWidth();
@@ -105,7 +95,17 @@ public class Display extends javax.swing.JFrame {
                 modified.flush();
                 return modified;
             }
-        });*/
+        });
+        WebcamPanel subOlga = new WebcamPanel(olga);
+        subOlga.setFPSDisplayed(true);
+        subOlga.setDisplayDebugInfo(true);
+        subOlga.setFPSLimit(60);
+        olgaPanel.removeAll();
+        olgaPanel.add(subOlga);
+        olgaPanel.revalidate();
+        olgaPanel.repaint();
+
+        alexei = Webcam.getWebcams().get(1);
         WebcamPanel subAlexei = new WebcamPanel(alexei);
         subAlexei.setFPSDisplayed(true);
         subAlexei.setDisplayDebugInfo(true);
@@ -170,8 +170,8 @@ public class Display extends javax.swing.JFrame {
     private void initComponents() {
 
         mariaPanel = new JPanel();
-        olgaPanel = new JPanel();
         alexeiPanel = new JPanel();
+        olgaPanel = new JPanel();
         meterset0 = new JPanel();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -181,11 +181,6 @@ public class Display extends javax.swing.JFrame {
         setName("rovCommander"); // NOI18N
         setUndecorated(true);
         setResizable(false);
-        addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent evt) {
-                formKeyPressed(evt);
-            }
-        });
         getContentPane().setLayout(new AbsoluteLayout());
 
         mariaPanel.setBackground(new Color(0, 0, 255));
@@ -197,19 +192,19 @@ public class Display extends javax.swing.JFrame {
         mariaPanel.setLayout(new BorderLayout());
         getContentPane().add(mariaPanel, new AbsoluteConstraints(0, 400, -1, -1));
 
-        olgaPanel.setBackground(new Color(0, 0, 255));
-        olgaPanel.setMaximumSize(new Dimension(600, 400));
-        olgaPanel.setMinimumSize(new Dimension(600, 400));
-        olgaPanel.setPreferredSize(new Dimension(600, 400));
-        olgaPanel.setLayout(new BorderLayout());
-        getContentPane().add(olgaPanel, new AbsoluteConstraints(0, 0, -1, -1));
-
         alexeiPanel.setBackground(new Color(0, 0, 255));
         alexeiPanel.setMaximumSize(new Dimension(600, 400));
         alexeiPanel.setMinimumSize(new Dimension(600, 400));
         alexeiPanel.setPreferredSize(new Dimension(600, 400));
         alexeiPanel.setLayout(new BorderLayout());
-        getContentPane().add(alexeiPanel, new AbsoluteConstraints(600, 0, -1, -1));
+        getContentPane().add(alexeiPanel, new AbsoluteConstraints(0, 0, -1, -1));
+
+        olgaPanel.setBackground(new Color(0, 0, 255));
+        olgaPanel.setMaximumSize(new Dimension(600, 400));
+        olgaPanel.setMinimumSize(new Dimension(600, 400));
+        olgaPanel.setPreferredSize(new Dimension(600, 400));
+        olgaPanel.setLayout(new BorderLayout());
+        getContentPane().add(olgaPanel, new AbsoluteConstraints(600, 0, -1, -1));
 
         meterset0.setBackground(new Color(0, 0, 0));
         meterset0.setMaximumSize(new Dimension(380, 380));
@@ -228,27 +223,6 @@ public class Display extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void formKeyPressed(KeyEvent evt)//GEN-FIRST:event_formKeyPressed
-    {//GEN-HEADEREND:event_formKeyPressed
-        //lol kola this code never works; event is never called when I press esc
-        /*if (evt.getKeyCode() == KeyEvent.VK_ESCAPE || evt.getKeyCode() == KeyEvent.VK_Q) {
-            disconnectCam();
-            dispose();
-            System.exit(0);
-        } else if (evt.getKeyCode() == KeyEvent.VK_F11 || evt.getKeyCode() == KeyEvent.VK_F) {
-            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                    .getDefaultScreenDevice();
-            if (gd.isFullScreenSupported()) {
-                if (isFullscreen) {
-                    gd.setFullScreenWindow(null);
-                } else {
-                    gd.setFullScreenWindow(this);
-                }
-                isFullscreen = !isFullscreen;
-            }
-        }*/
-    }//GEN-LAST:event_formKeyPressed
 
     /**
      * @param args the command line arguments

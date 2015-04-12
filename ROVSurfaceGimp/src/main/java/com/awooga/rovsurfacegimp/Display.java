@@ -421,7 +421,7 @@ public class Display extends javax.swing.JFrame {
             new Display().setVisible(true);
         });
     }
-    double pixsizeL, pixsizeR, pixsize, shift, lx1, lx2, rx1, rx2, size, A, B, C, D;
+    double pixsizeL, pixsizeR, pixsize, shift, lx1, lx2, rx1, rx2, size, A, B, C, D, E;
 
     private void calculations() {
         double lx1, lx2, rx1, rx2;
@@ -456,15 +456,17 @@ public class Display extends javax.swing.JFrame {
 //        size = C*(pixsize/(A*(shift^B)))^D;       
 //       pow(shift, B);     
 //        size = C*(pixsize/(A*(pow(shift,B))))^D;
-        C = 0.002983;
-        A = 0.003081;
-        B = 1.059;
-        D = 0.95;
+        C = 0.0006301;
+        A = 0.003312;
+        B = 0.9404;
+        D = 1.065;
+        E = 0.2738;
+        
 
         double size1 = pow(shift, B);
         System.out.println("size1: " + size1);
 
-        double size2 = pixsize / (A * (size1));
+        double size2 = pixsize / (A * (size1)+E);
         System.out.println("size2: " + size2);
 
         System.out.println("pixsize: " + pixsize);

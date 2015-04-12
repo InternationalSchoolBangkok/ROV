@@ -45,12 +45,12 @@ void CNS::syncIMU() {
     pitch = scaleFloat(imu->getPitch(), -168.800003, 165.490005);
     roll = scaleFloat(imu->getRoll(), -341.869995, 341.970001);
     yaw = scaleFloat(imu->getYaw(), -360, 360);
-    
+
     int ps = pitch * 32768;
     int rs = roll * 32768;
     int ys = yaw * 32768;
-    int hs = scaleFloat(depth,0,5) * 32768;
-    
+    int hs = scaleFloat(depth, 0, 5) * 32768;
+
 
     rov->set(0, rs / 256);
     rov->set(1, (int) rs % 256 - 128);
@@ -77,6 +77,8 @@ void CNS::syncCommander() {
     bitset<8> bs2(rov->get(0));
     circle = bs2[0];
     cross = bs2[2];
+    down = bs2[6];
+    right = bs2[4];
     //heightPID->setPIDGainz(rov->get(23), rov->get(24), rov->get(25));
     //rollPID->setPIDGainz(rov->get(26), rov->get(27), rov->get(28));
     //pitchPID->setPIDGainz(rov->get(29), rov->get(30), rov->get(31));
@@ -99,22 +101,26 @@ void* CNS::run() {
     long currentt = getMicrotime();
     long dt = currentt - lastt;
 
-    rollPID = new PID(8, 0, 0); //3
+    rollPID = new PID(8, 0, 0);
     pitchPID = new PID(4, 0, 0);
-    heightPID = new PID(20,0,0);//new PID(20, 1, 5);
-    
+    heightPID = new PID(20, 0, 0); //new PID(20, 1, 5);
+    //disable PIDs when started up
+    rollPID->enablePID(false);
+    pitchPID->enablePID(false);
+    heightPID->enablePID(false);
     //PID* heightPID = new PID(1.1,0.7,1.0);
-    int i=0;
+    int i = 0;
+    bool clawLocked = false;
     while (true) {
-        
+
         i++;
         syncIMU();
         syncCommander();
 
-        motorPower[0] = (-ly - lx)*64.0 * straifeGain;
-        motorPower[1] = (-ly + lx)*64.0 * straifeGain;
-        motorPower[2] = (ly + lx)*64.0 * straifeGain;
-        motorPower[3] = (ly - lx)*64.0 * straifeGain;
+        motorPower[0] = (-ly - lx)*128.0 * straifeGain;
+        motorPower[1] = (-ly + lx)*128.0 * straifeGain;
+        motorPower[2] = (ly + lx)*128.0 * straifeGain;
+        motorPower[3] = (ly - lx)*128.0 * straifeGain;
         motorPower[0] += -rx * 128.0 * turnGain;
         motorPower[1] += rx * 128.0 * turnGain;
         motorPower[2] += -rx * 128.0 * turnGain;
@@ -122,7 +128,7 @@ void* CNS::run() {
 
         // time calc
         currentt = getMicrotime();
-        dt = (currentt - lastt)/1000000.0;
+        dt = (currentt - lastt) / 1000000.0;
         lastt = currentt;
 
         rollPID->setPV(roll);
@@ -139,7 +145,17 @@ void* CNS::run() {
             heightPID->enablePID(true);
             heightPID->setSP(depth);
         }
-
+        int clawVal;
+        if (!clawLocked) {
+            clawVal = l2 ? 1 : (l1 ? -1 : 0);
+            if (down) {
+                clawVal = 1;
+                clawLocked = true;
+            }
+        } else if (clawLocked && right) {
+            clawVal = 0;
+            clawLocked = false;
+        }
         float rollo = rollPID->step(dt);
         float pitcho = pitchPID->step(dt);
         float heighto = heightPID->step(dt);
@@ -149,37 +165,26 @@ void* CNS::run() {
             heighto = -.5;
             heightPID->setSP(depth);
         } else if (r2) {
-            heighto = .5;
+            heighto = 1;
             heightPID->setSP(depth);
         } else {
 
         }
-        if(i%5==0){
-            printf("R:%.5f\tP:%.5f\tH:%.5f\tSum:%.5f\tD:%.5f\n",rollo,pitcho,
-                    heighto, rollo+pitcho+heighto,depth);
+        if (i % 5 == 0) {
+            printf("R:%.5f\tP:%.5f\tH:%.5f\tSum:%.5f\tD:%.5f\n", rollo, pitcho,
+                    heighto, rollo + pitcho + heighto, depth);
         }
         motorPower[4] = (rollo + pitcho - heighto) * 128;
         motorPower[5] = (-rollo + pitcho - heighto) * 128;
         motorPower[6] = (-rollo - pitcho - heighto) * 128;
         motorPower[7] = (rollo - pitcho - heighto) * 128;
-
-
-
-
-
-        if (start) {
-            heightPID->setSP(depth);
-        }
-
-
-
         //pid gain needs readjustments cuz not guaranteed -1<x<1
         for (int i = 0; i < 8; ++i) {
             motor[i] = min(max((int) motorPower[i], -128), 127);
             ardee->set(i, motor[i]);
             //send motor powers to ardee
         }//convert float receiver over serial back to float
-        ardee->set(8, l2 ? 1 : (l1 ? -1 : 0)); //claw setting
+        ardee->set(8, clawVal); //claw setting
         /*Bytes2float btf;
         for (int i = 0; i < 4; i++) {
             btf.c[i] = ardee->get(i);
