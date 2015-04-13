@@ -173,6 +173,9 @@ public class Display extends javax.swing.JFrame {
         alexeiPanel = new JPanel();
         olgaPanel = new JPanel();
         meterset0 = new JPanel();
+        stabilizationStateLabel = new JLabel();
+        clawStateLabel = new JLabel();
+        rasputinStateLabel = new JLabel();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("ROV Rasputin Commander");
@@ -221,6 +224,18 @@ public class Display extends javax.swing.JFrame {
 
         getContentPane().add(meterset0, new AbsoluteConstraints(610, 410, 380, 380));
 
+        stabilizationStateLabel.setForeground(new Color(255, 255, 255));
+        stabilizationStateLabel.setText("Stabilization State");
+        getContentPane().add(stabilizationStateLabel, new AbsoluteConstraints(1000, 410, -1, -1));
+
+        clawStateLabel.setForeground(new Color(255, 255, 255));
+        clawStateLabel.setText("Claw State");
+        getContentPane().add(clawStateLabel, new AbsoluteConstraints(1000, 430, -1, -1));
+
+        rasputinStateLabel.setForeground(new Color(255, 255, 255));
+        rasputinStateLabel.setText("Rasputin State");
+        getContentPane().add(rasputinStateLabel, new AbsoluteConstraints(1000, 450, -1, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -247,9 +262,12 @@ public class Display extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JPanel alexeiPanel;
+    public JLabel clawStateLabel;
     private JPanel mariaPanel;
     public JPanel meterset0;
     private JPanel olgaPanel;
+    public JLabel rasputinStateLabel;
+    public JLabel stabilizationStateLabel;
     // End of variables declaration//GEN-END:variables
 }
 

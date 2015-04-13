@@ -112,8 +112,12 @@ void* CNS::run() {
     int i = 0;
     int startBeginI = 0;
     bool clawLocked = false;
+    char hue;
+    bitset<8> stateBS; //first to last: stabilization state, claw state, on/rasputin state
+    stateBS.set(0,false);
+    stateBS.set(1,false);
+    stateBS.set(2,true);
     while (true) {
-
         i++;
         syncIMU();
         syncCommander();
@@ -140,11 +144,13 @@ void* CNS::run() {
             rollPID->enablePID(false);
             pitchPID->enablePID(false);
             heightPID->enablePID(false);
+            stateBS.set(0,false);
         } else if (cross) {
             rollPID->enablePID(true);
             pitchPID->enablePID(true);
             heightPID->enablePID(true);
             heightPID->setSP(depth);
+            stateBS.set(0,true);
         }
         int clawVal;
         if (!clawLocked) {
@@ -152,19 +158,23 @@ void* CNS::run() {
             if (down) {
                 clawVal = 1;
                 clawLocked = true;
+                stateBS.set(1,true);
             }
         } else if (clawLocked && right) {
             clawVal = 0;
             clawLocked = false;
+            stateBS.set(1,false);
         }
         if (start) {
             if (i - startBeginI == i) {
                 //if first time
                 startBeginI = i;
-            } else if (i - startBeginI >= RUNRATE*5) {
+            } else if (i - startBeginI >= RUNRATE * 5) {
                 //if held down for 5 seconds power off raspi
+                rov->set(8,64);
                 system("sudo poweroff");
-            } 
+                exit(0);
+            }
         } else {
             startBeginI = 0;
         }
@@ -195,17 +205,13 @@ void* CNS::run() {
             //send motor powers to ardee
         }//convert float receiver over serial back to float
         ardee->set(8, clawVal); //claw setting
-        /*Bytes2float btf;
-        for (int i = 0; i < 4; i++) {
-            btf.c[i] = ardee->get(i);
-        }
-        depth = btf.f;*/
         char bytes[3];
         for (int i = 0; i < 4; i++) {
             bytes[i] = ardee->get(i);
         }
         float *fp = (float*) bytes;
         depth = *fp;
+        rov->set(8,stateBS.to_ulong());
         usleep(sleep);
     }
 }

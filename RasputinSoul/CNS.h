@@ -35,11 +35,6 @@ private:
 
     void syncIMU();
     void syncCommander();
-
-    union Bytes2float {
-        float f;
-        unsigned char c[0];
-    };
 };
 
 #endif	/* CNS_H */

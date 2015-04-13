@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.BitSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -40,7 +41,6 @@ class Worker extends Thread {
         parent = display;
 
         this.settings = settings;
-
         skipCommunication = settings.getBoolean("workerSkipCommunication");
         skipController = settings.getBoolean("workerSkipController");
         debugMode = settings.getBoolean("debugMode");
@@ -83,6 +83,7 @@ class Worker extends Thread {
                 // roll(0,1)max180 pitch(2,3)max180
                 roll = (rasputin.get(0) * 256 + (rasputin.get(1) + 128)) / 32768f * 180;
                 pitch = (rasputin.get(2) * 256 + (rasputin.get(3) + 128)) / 32768f * 180;
+                updateStateLabels((byte) rasputin.get(8));
             }
             if (debugMode) {
                 if (Debugger.instance != null) {
@@ -110,80 +111,116 @@ class Worker extends Thread {
 
     private int[] getOutput(float controllerValues[]) {
         /*
-        # Commander > Rasputin Table
-0 -> Controller Direction State
-	bit0: up
-	bit1: down
-	bit2: left
-	bit3: right
-	bit4: triangle
-	bit5: cross
-	bit6: square
-	bit7: circle
-1 -> Controller Misc. State
-	bit0: L1
-	bit1: L2
-	bit2: R1
-	bit3: R2
-	bit4: select
-	bit5: start
-	bit6: L3
-	bit7: R3
-2 -> Controller Left Stick x Value
-3 -> Controller Left Stick y Value
-4 -> Controller Right Stick x Value
-5 -> Controller Right Stick y Value
+         # Commander > Rasputin Table
+         0 -> Controller Direction State
+         bit0: up
+         bit1: down
+         bit2: left
+         bit3: right
+         bit4: triangle
+         bit5: cross
+         bit6: square
+         bit7: circle
+         1 -> Controller Misc. State
+         bit0: L1
+         bit1: L2
+         bit2: R1
+         bit3: R2
+         bit4: select
+         bit5: start
+         bit6: L3
+         bit7: R3
+         2 -> Controller Left Stick x Value
+         3 -> Controller Left Stick y Value
+         4 -> Controller Right Stick x Value
+         5 -> Controller Right Stick y Value
         
-     # Controller Components Mapping
-0 -> Left Stick x Value
-1 -> Left Stick y Value
-2 -> Right Stick x Value
-3 -> Right Stick y Value
-4 -> Select
-5 -> L3
-6 -> R3
-7 -> Start
-8 -> Up
-9 -> Right
-10 -> Down
-11 -> Left
-12 -> L2
-13 -> R2
-14 -> L1
-15 -> R1
-16 -> Triangle
-17 -> Circle
-18 -> Cross
-19 -> Square
-20 -> PS3   
-        */
-        int []intMappedValues = new int[32];
-        
-        if(controllerValues[8]>0.5) intMappedValues[0]+=128;
-        if(controllerValues[10]>0.5) intMappedValues[0]+=64;
-        if(controllerValues[11]>0.5) intMappedValues[0]+=32;
-        if(controllerValues[9]>0.5) intMappedValues[0]+=16;
-        if(controllerValues[16]>0.5) intMappedValues[0]+=8;
-        if(controllerValues[18]>0.5) intMappedValues[0]+=4;
-        if(controllerValues[19]>0.5) intMappedValues[0]+=2;
-        if(controllerValues[17]>0.5) intMappedValues[0]+=1;
-        if(intMappedValues[0]>=128) intMappedValues[0]-=256;
-        
-        if(controllerValues[14]>0.5) intMappedValues[1]+=128;
-        if(controllerValues[12]>0.5) intMappedValues[1]+=64;
-        if(controllerValues[15]>0.5) intMappedValues[1]+=32;
-        if(controllerValues[13]>0.5) intMappedValues[1]+=16;
-        if(controllerValues[4]>0.5) intMappedValues[1]+=8;
-        if(controllerValues[7]>0.5) intMappedValues[1]+=4;
-        if(controllerValues[5]>0.5) intMappedValues[1]+=2;
-        if(controllerValues[6]>0.5) intMappedValues[1]+=1;
-        if(intMappedValues[1]>=128) intMappedValues[1]-=256;
-        
-        intMappedValues[2]=(int)(controllerValues[0]*127);
-        intMappedValues[3]=(int)(controllerValues[1]*127);
-        intMappedValues[4]=(int)(controllerValues[2]*127);
-        intMappedValues[5]=(int)(controllerValues[3]*127);
-        
+         # Controller Components Mapping
+         0 -> Left Stick x Value
+         1 -> Left Stick y Value
+         2 -> Right Stick x Value
+         3 -> Right Stick y Value
+         4 -> Select
+         5 -> L3
+         6 -> R3
+         7 -> Start
+         8 -> Up
+         9 -> Right
+         10 -> Down
+         11 -> Left
+         12 -> L2
+         13 -> R2
+         14 -> L1
+         15 -> R1
+         16 -> Triangle
+         17 -> Circle
+         18 -> Cross
+         19 -> Square
+         20 -> PS3   
+         */
+        int[] intMappedValues = new int[32];
+
+        if (controllerValues[8] > 0.5) {
+            intMappedValues[0] += 128;
+        }
+        if (controllerValues[10] > 0.5) {
+            intMappedValues[0] += 64;
+        }
+        if (controllerValues[11] > 0.5) {
+            intMappedValues[0] += 32;
+        }
+        if (controllerValues[9] > 0.5) {
+            intMappedValues[0] += 16;
+        }
+        if (controllerValues[16] > 0.5) {
+            intMappedValues[0] += 8;
+        }
+        if (controllerValues[18] > 0.5) {
+            intMappedValues[0] += 4;
+        }
+        if (controllerValues[19] > 0.5) {
+            intMappedValues[0] += 2;
+        }
+        if (controllerValues[17] > 0.5) {
+            intMappedValues[0] += 1;
+        }
+        if (intMappedValues[0] >= 128) {
+            intMappedValues[0] -= 256;
+        }
+
+        if (controllerValues[14] > 0.5) {
+            intMappedValues[1] += 128;
+        }
+        if (controllerValues[12] > 0.5) {
+            intMappedValues[1] += 64;
+        }
+        if (controllerValues[15] > 0.5) {
+            intMappedValues[1] += 32;
+        }
+        if (controllerValues[13] > 0.5) {
+            intMappedValues[1] += 16;
+        }
+        if (controllerValues[4] > 0.5) {
+            intMappedValues[1] += 8;
+        }
+        if (controllerValues[7] > 0.5) {
+            intMappedValues[1] += 4;
+        }
+        if (controllerValues[5] > 0.5) {
+            intMappedValues[1] += 2;
+        }
+        if (controllerValues[6] > 0.5) {
+            intMappedValues[1] += 1;
+        }
+        if (intMappedValues[1] >= 128) {
+            intMappedValues[1] -= 256;
+        }
+
+        intMappedValues[2] = (int) (controllerValues[0] * 127);
+        intMappedValues[3] = (int) (controllerValues[1] * 127);
+        intMappedValues[4] = (int) (controllerValues[2] * 127);
+        intMappedValues[5] = (int) (controllerValues[3] * 127);
+
         return intMappedValues;
     }
 
@@ -242,6 +279,34 @@ class Worker extends Thread {
         g.setStroke(new BasicStroke(3));
         g.setColor(Color.red);
         g.drawRect(60, 160, 260, 60);
+    }
+
+    private void updateStateLabels(byte stateByte) {
+        byte bytes[] = {stateByte};
+        BitSet bs = new BitSet(8);
+        bs = BitSet.valueOf(bytes);
+        //System.out.println(bs.toString());
+        if (bs.get(0)) {
+            parent.stabilizationStateLabel.setText("Stabilization On");
+            parent.stabilizationStateLabel.setForeground(Color.green);
+        } else {
+            parent.stabilizationStateLabel.setText("Stabilization Off");
+            parent.stabilizationStateLabel.setForeground(Color.red);
+        }
+        if (bs.get(1)) {
+            parent.clawStateLabel.setText("Claw Locked");
+            parent.clawStateLabel.setForeground(Color.red);
+        } else {
+            parent.clawStateLabel.setText("Claw Unlocked");
+            parent.clawStateLabel.setForeground(Color.green);
+        }
+        if (bs.get(2)) {
+            parent.rasputinStateLabel.setText("ROV ready");
+            parent.rasputinStateLabel.setForeground(Color.green);
+        } else {
+            parent.rasputinStateLabel.setText("ROV not ready");
+            parent.rasputinStateLabel.setForeground(Color.red);
+        }
     }
 
     private void updateUI(float cData[]) {
