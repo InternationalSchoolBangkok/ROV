@@ -119,6 +119,7 @@ public class Display extends javax.swing.JFrame {
         rootPane.requestFocus();
         connectCam();
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -128,17 +129,18 @@ public class Display extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        olgaLayers = new JLayeredPane();
-        olgaImagePanel = new JPanel();
-        olgaImageHolder = new JLabel();
-        olgaPanel = new JPanel();
-        freezeButton = new JButton();
-        unfreezeButton = new JButton();
         alexeiLayers = new JLayeredPane();
         alexeiImagePanel = new JPanel();
         alexeiImageHolder = new JLabel();
         alexeiPanel = new JPanel();
+        freezeButton = new JButton();
+        unfreezeButton = new JButton();
+        olgaLayers = new JLayeredPane();
+        olgaImagePanel = new JPanel();
+        olgaImageHolder = new JLabel();
+        olgaPanel = new JPanel();
         outputLabel = new JLabel();
+        outputLabel1 = new JLabel();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("ROV Surface Gimp");
@@ -152,73 +154,11 @@ public class Display extends javax.swing.JFrame {
             }
         });
 
-        olgaLayers.setPreferredSize(new Dimension(600, 400));
-
-        olgaImagePanel.setPreferredSize(new Dimension(600, 400));
-
-        olgaImageHolder.setText("THIS IS OLGA IMAGE HOLDER HUE");
-        olgaImageHolder.setPreferredSize(new Dimension(600, 400));
-        olgaImageHolder.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent evt) {
-                olgaImageHolderMousePressed(evt);
-            }
-        });
-
-        GroupLayout olgaImagePanelLayout = new GroupLayout(olgaImagePanel);
-        olgaImagePanel.setLayout(olgaImagePanelLayout);
-        olgaImagePanelLayout.setHorizontalGroup(olgaImagePanelLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(olgaImageHolder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        );
-        olgaImagePanelLayout.setVerticalGroup(olgaImagePanelLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(olgaImageHolder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        );
-
-        olgaPanel.setBackground(new Color(204, 204, 204));
-        olgaPanel.setMaximumSize(new Dimension(600, 400));
-        olgaPanel.setMinimumSize(new Dimension(600, 400));
-        olgaPanel.setPreferredSize(new Dimension(600, 400));
-        olgaPanel.setLayout(new BorderLayout());
-
-        GroupLayout olgaLayersLayout = new GroupLayout(olgaLayers);
-        olgaLayers.setLayout(olgaLayersLayout);
-        olgaLayersLayout.setHorizontalGroup(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(olgaLayersLayout.createSequentialGroup()
-                .add(olgaPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .add(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
-                .add(olgaLayersLayout.createSequentialGroup()
-                    .add(olgaImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        olgaLayersLayout.setVerticalGroup(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(olgaLayersLayout.createSequentialGroup()
-                .add(olgaPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .add(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
-                .add(olgaLayersLayout.createSequentialGroup()
-                    .add(olgaImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        olgaLayers.setLayer(olgaImagePanel, JLayeredPane.DEFAULT_LAYER);
-        olgaLayers.setLayer(olgaPanel, JLayeredPane.DEFAULT_LAYER);
-
-        freezeButton.setText("Freeze");
-        freezeButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                freezeButtonActionPerformed(evt);
-            }
-        });
-
-        unfreezeButton.setText("Unfreeze");
-        unfreezeButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                unfreezeButtonActionPerformed(evt);
-            }
-        });
-
         alexeiLayers.setPreferredSize(new Dimension(600, 400));
 
-        alexeiImageHolder.setText("THIS IS THE ALEXEI IMAGE PANEL HUE");
+        alexeiImagePanel.setPreferredSize(new Dimension(600, 400));
+
+        alexeiImageHolder.setText("THIS IS alexei IMAGE HOLDER HUE");
         alexeiImageHolder.setPreferredSize(new Dimension(600, 400));
         alexeiImageHolder.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt) {
@@ -244,16 +184,18 @@ public class Display extends javax.swing.JFrame {
         GroupLayout alexeiLayersLayout = new GroupLayout(alexeiLayers);
         alexeiLayers.setLayout(alexeiLayersLayout);
         alexeiLayersLayout.setHorizontalGroup(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(alexeiPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(alexeiLayersLayout.createSequentialGroup()
+                .add(alexeiPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
             .add(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
-                .add(GroupLayout.TRAILING, alexeiLayersLayout.createSequentialGroup()
-                    .add(0, 0, Short.MAX_VALUE)
-                    .add(alexeiImagePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                .add(alexeiLayersLayout.createSequentialGroup()
+                    .add(alexeiImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         alexeiLayersLayout.setVerticalGroup(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
             .add(alexeiLayersLayout.createSequentialGroup()
-                .add(alexeiPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(alexeiPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
             .add(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
                 .add(alexeiLayersLayout.createSequentialGroup()
                     .add(alexeiImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -262,34 +204,101 @@ public class Display extends javax.swing.JFrame {
         alexeiLayers.setLayer(alexeiImagePanel, JLayeredPane.DEFAULT_LAYER);
         alexeiLayers.setLayer(alexeiPanel, JLayeredPane.DEFAULT_LAYER);
 
+        freezeButton.setText("Freeze");
+        freezeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                freezeButtonActionPerformed(evt);
+            }
+        });
+
+        unfreezeButton.setText("Unfreeze");
+        unfreezeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                unfreezeButtonActionPerformed(evt);
+            }
+        });
+
+        olgaLayers.setPreferredSize(new Dimension(600, 400));
+
+        olgaImageHolder.setText("THIS IS THE olga IMAGE PANEL HUE");
+        olgaImageHolder.setPreferredSize(new Dimension(600, 400));
+        olgaImageHolder.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt) {
+                olgaImageHolderMousePressed(evt);
+            }
+        });
+
+        GroupLayout olgaImagePanelLayout = new GroupLayout(olgaImagePanel);
+        olgaImagePanel.setLayout(olgaImagePanelLayout);
+        olgaImagePanelLayout.setHorizontalGroup(olgaImagePanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(olgaImageHolder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        );
+        olgaImagePanelLayout.setVerticalGroup(olgaImagePanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(olgaImageHolder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        );
+
+        olgaPanel.setBackground(new Color(204, 204, 204));
+        olgaPanel.setMaximumSize(new Dimension(600, 400));
+        olgaPanel.setMinimumSize(new Dimension(600, 400));
+        olgaPanel.setPreferredSize(new Dimension(600, 400));
+        olgaPanel.setLayout(new BorderLayout());
+
+        GroupLayout olgaLayersLayout = new GroupLayout(olgaLayers);
+        olgaLayers.setLayout(olgaLayersLayout);
+        olgaLayersLayout.setHorizontalGroup(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(olgaPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
+                .add(GroupLayout.TRAILING, olgaLayersLayout.createSequentialGroup()
+                    .add(0, 0, Short.MAX_VALUE)
+                    .add(olgaImagePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+        );
+        olgaLayersLayout.setVerticalGroup(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(olgaLayersLayout.createSequentialGroup()
+                .add(olgaPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .add(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
+                .add(olgaLayersLayout.createSequentialGroup()
+                    .add(olgaImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        olgaLayers.setLayer(olgaImagePanel, JLayeredPane.DEFAULT_LAYER);
+        olgaLayers.setLayer(olgaPanel, JLayeredPane.DEFAULT_LAYER);
+
         outputLabel.setForeground(new Color(255, 255, 255));
         outputLabel.setText("HUEHEUHEHEHEUEHUE");
+
+        outputLabel1.setForeground(new Color(255, 255, 255));
+        outputLabel1.setText("HUEHEUHEHEHEUEHUE");
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .add(layout.createParallelGroup(GroupLayout.LEADING)
+                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .add(layout.createSequentialGroup()
+                        .add(freezeButton)
+                        .add(6, 6, 6)
+                        .add(unfreezeButton)
+                        .add(18, 18, 18)
+                        .add(outputLabel)))
                 .add(16, 16, 16)
-                .add(olgaLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-            .add(layout.createSequentialGroup()
-                .add(freezeButton)
-                .add(6, 6, 6)
-                .add(unfreezeButton)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(outputLabel))
+                .add(layout.createParallelGroup(GroupLayout.LEADING)
+                    .add(outputLabel1)
+                    .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE)
-                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE))
+                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE)
+                    .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE))
                 .add(6, 6, 6)
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
                     .add(freezeButton)
                     .add(layout.createParallelGroup(GroupLayout.BASELINE)
                         .add(unfreezeButton)
-                        .add(outputLabel))))
+                        .add(outputLabel)
+                        .add(outputLabel1))))
         );
 
         pack();
@@ -341,7 +350,10 @@ public class Display extends javax.swing.JFrame {
         int y = evt.getY();
         lx1 = lx2;
         lx2 = evt.getX();
-
+        //nic
+        ly1 = ly2;
+        ly2 = evt.getY();
+        //endnic
         Graphics2D g = (Graphics2D) alexeiImageHolder.getGraphics();
         g.drawImage(alexeiImage, null, 0, 0);
         g.setColor(new Color(0xaaaaff));
@@ -366,7 +378,10 @@ public class Display extends javax.swing.JFrame {
         int y = evt.getY();
         rx1 = rx2;
         rx2 = evt.getX();
-
+        //nic
+        ry1 = ry2;
+        ry2 = evt.getY();
+        //endnic
         Graphics2D g = (Graphics2D) olgaImageHolder.getGraphics();
         g.drawImage(olgaImage, null, 0, 0);
         g.setColor(new Color(0xaaaaff));
@@ -422,13 +437,18 @@ public class Display extends javax.swing.JFrame {
         });
     }
     double pixsizeL, pixsizeR, pixsize, shift, lx1, lx2, rx1, rx2, size, A, B, C, D, E;
+    double pixsizeL1, pixsizeR1, pixsize1, shift1, ly1, ly2, ry1, ry2, size1, A1, B1, C1, D1, E1;
 
     private void calculations() {
-        double lx1, lx2, rx1, rx2;
+        double lx1, lx2, rx1, rx2, ly1, ly2, ry1, ry2;
         lx1 = this.lx1;
         lx2 = this.lx2;
         rx1 = this.rx1;
         rx2 = this.rx2;
+        ly1 = this.ly1;
+        ly2 = this.ly2;
+        ry1 = this.ry1;
+        ry2 = this.ry2;
         //incase x1>x2
         if (lx1 > lx2) {
             double tmp = lx1;
@@ -440,6 +460,18 @@ public class Display extends javax.swing.JFrame {
             rx1 = rx2;
             rx2 = tmp;
         }
+
+        if (ly1 > ly2) {
+            double tmp = ly1;
+            ly1 = ly2;
+            ly2 = tmp;
+        }
+        if (ry1 > ry2) {
+            double tmp = ry1;
+            ry1 = ry2;
+            ry2 = tmp;
+        }
+
         pixsizeL = lx2 - lx1;
         System.out.println("pixsizeL " + pixsizeL);
 
@@ -453,6 +485,19 @@ public class Display extends javax.swing.JFrame {
         shift = (shift > 0) ? shift : -shift;
         System.out.println("pixel shift " + shift);
 
+        pixsizeL1 = ly2 - ly1;
+        System.out.println("pixsizeL1 " + pixsizeL1);
+
+        pixsizeR1 = ry2 - ry1;
+        System.out.println("pixsizeR1 " + pixsizeR1);
+
+        pixsize1 = (pixsizeL1 + pixsizeR1) / 2;
+        System.out.println("average size pix1: " + pixsize1);
+
+        shift1 = ly1 - ry1;
+        shift1 = (shift1 > 0) ? shift1 : -shift1;
+        System.out.println("pixel shift1 " + shift1);
+
 //        size = C*(pixsize/(A*(shift^B)))^D;       
 //       pow(shift, B);     
 //        size = C*(pixsize/(A*(pow(shift,B))))^D;
@@ -461,12 +506,11 @@ public class Display extends javax.swing.JFrame {
         B = 0.9404;
         D = 1.065;
         E = 0.2738;
-        
 
         double size1 = pow(shift, B);
         System.out.println("size1: " + size1);
 
-        double size2 = pixsize / (A * (size1)+E);
+        double size2 = pixsize / (A * (size1) + E);
         System.out.println("size2: " + size2);
 
         System.out.println("pixsize: " + pixsize);
@@ -495,6 +539,46 @@ public class Display extends javax.swing.JFrame {
             sizeString = String.format("%.5f", size);
         }
         outputLabel.setText(String.format("left(%.0f-%.0f), right(%.0f-%.0f), size(%s)", lx1, lx2, rx1, rx2, sizeString));
+
+        // NEW SHIT FOR Y
+        C1 = 0.0006301;
+        A1 = 0.003312;
+        B1 = 0.9404;
+        D1 = 1.065;
+        E1 = 0.2738;
+
+        double ysize1 = pow(shift1, B1);
+        System.out.println("ysize1: " + ysize1);
+
+        double ysize2 = pixsize1 / (A1 * (ysize1) + E1);
+        System.out.println("ysize2: " + ysize2);
+
+        System.out.println("pixsize1: " + pixsize1);
+
+//        double size3;
+//        if(size2>0){
+//        }else{
+//            double temp = Math.abs(size2);
+//            size3 = pow(temp ,1.5);
+//            size3*=-1;
+//        }
+        double ysize3 = pow(ysize2, D1);
+
+        System.out.println("ysize3: " + ysize3);
+
+        size1 = C1 * ysize3;
+
+        System.out.println("size1 hue: " + size1);
+
+        Double.toString(size1);
+
+        String size1String;
+        if (Double.isInfinite(size1)) {
+            size1String = "your mom";
+        } else {
+            size1String = String.format("%.5f", size1);
+        }
+        outputLabel1.setText(String.format("left(%.0f-%.0f), right(%.0f-%.0f), size(%s)", ly1, ly2, ry1, ry2, size1String));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -508,6 +592,7 @@ public class Display extends javax.swing.JFrame {
     private JLayeredPane olgaLayers;
     private JPanel olgaPanel;
     private JLabel outputLabel;
+    private JLabel outputLabel1;
     private JButton unfreezeButton;
     // End of variables declaration//GEN-END:variables
 }
