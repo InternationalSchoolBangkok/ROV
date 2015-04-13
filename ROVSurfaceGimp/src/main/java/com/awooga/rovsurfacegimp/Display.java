@@ -6,6 +6,7 @@
 package com.awooga.rovsurfacegimp;
 
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamImageTransformer;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.ds.ipcam.*;
 import com.sun.image.codec.jpeg.JPEGCodec;
@@ -65,6 +66,19 @@ public class Display extends javax.swing.JFrame {
 
     private void connectCam() {
         olga = Webcam.getWebcams().get(0);
+        olga.setImageTransformer(new WebcamImageTransformer() {
+            @Override
+            public BufferedImage transform(BufferedImage image) {
+                int w = image.getWidth();
+                int h = image.getHeight();
+                BufferedImage modified = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+                Graphics2D g2 = modified.createGraphics();
+                g2.drawImage(image, w, h, -w, -h, null);
+                g2.dispose();
+                modified.flush();
+                return modified;
+            }
+        });
         WebcamPanel subOlga = new WebcamPanel(olga);
         subOlga.setFPSDisplayed(true);
         subOlga.setDisplayDebugInfo(true);
@@ -129,16 +143,16 @@ public class Display extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        alexeiLayers = new JLayeredPane();
-        alexeiImagePanel = new JPanel();
-        alexeiImageHolder = new JLabel();
-        alexeiPanel = new JPanel();
-        freezeButton = new JButton();
-        unfreezeButton = new JButton();
         olgaLayers = new JLayeredPane();
         olgaImagePanel = new JPanel();
         olgaImageHolder = new JLabel();
         olgaPanel = new JPanel();
+        freezeButton = new JButton();
+        unfreezeButton = new JButton();
+        alexeiLayers = new JLayeredPane();
+        alexeiImagePanel = new JPanel();
+        alexeiImageHolder = new JLabel();
+        alexeiPanel = new JPanel();
         outputLabel = new JLabel();
         outputLabel1 = new JLabel();
 
@@ -154,73 +168,11 @@ public class Display extends javax.swing.JFrame {
             }
         });
 
-        alexeiLayers.setPreferredSize(new Dimension(600, 400));
-
-        alexeiImagePanel.setPreferredSize(new Dimension(600, 400));
-
-        alexeiImageHolder.setText("THIS IS alexei IMAGE HOLDER HUE");
-        alexeiImageHolder.setPreferredSize(new Dimension(600, 400));
-        alexeiImageHolder.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent evt) {
-                alexeiImageHolderMousePressed(evt);
-            }
-        });
-
-        GroupLayout alexeiImagePanelLayout = new GroupLayout(alexeiImagePanel);
-        alexeiImagePanel.setLayout(alexeiImagePanelLayout);
-        alexeiImagePanelLayout.setHorizontalGroup(alexeiImagePanelLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(alexeiImageHolder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        );
-        alexeiImagePanelLayout.setVerticalGroup(alexeiImagePanelLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(alexeiImageHolder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        );
-
-        alexeiPanel.setBackground(new Color(204, 204, 204));
-        alexeiPanel.setMaximumSize(new Dimension(600, 400));
-        alexeiPanel.setMinimumSize(new Dimension(600, 400));
-        alexeiPanel.setPreferredSize(new Dimension(600, 400));
-        alexeiPanel.setLayout(new BorderLayout());
-
-        GroupLayout alexeiLayersLayout = new GroupLayout(alexeiLayers);
-        alexeiLayers.setLayout(alexeiLayersLayout);
-        alexeiLayersLayout.setHorizontalGroup(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(alexeiLayersLayout.createSequentialGroup()
-                .add(alexeiPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .add(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
-                .add(alexeiLayersLayout.createSequentialGroup()
-                    .add(alexeiImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        alexeiLayersLayout.setVerticalGroup(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(alexeiLayersLayout.createSequentialGroup()
-                .add(alexeiPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .add(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
-                .add(alexeiLayersLayout.createSequentialGroup()
-                    .add(alexeiImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        alexeiLayers.setLayer(alexeiImagePanel, JLayeredPane.DEFAULT_LAYER);
-        alexeiLayers.setLayer(alexeiPanel, JLayeredPane.DEFAULT_LAYER);
-
-        freezeButton.setText("Freeze");
-        freezeButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                freezeButtonActionPerformed(evt);
-            }
-        });
-
-        unfreezeButton.setText("Unfreeze");
-        unfreezeButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                unfreezeButtonActionPerformed(evt);
-            }
-        });
-
         olgaLayers.setPreferredSize(new Dimension(600, 400));
 
-        olgaImageHolder.setText("THIS IS THE olga IMAGE PANEL HUE");
+        olgaImagePanel.setPreferredSize(new Dimension(600, 400));
+
+        olgaImageHolder.setText("THIS IS olga IMAGE HOLDER HUE");
         olgaImageHolder.setPreferredSize(new Dimension(600, 400));
         olgaImageHolder.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent evt) {
@@ -246,16 +198,18 @@ public class Display extends javax.swing.JFrame {
         GroupLayout olgaLayersLayout = new GroupLayout(olgaLayers);
         olgaLayers.setLayout(olgaLayersLayout);
         olgaLayersLayout.setHorizontalGroup(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(olgaPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(olgaLayersLayout.createSequentialGroup()
+                .add(olgaPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
             .add(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
-                .add(GroupLayout.TRAILING, olgaLayersLayout.createSequentialGroup()
-                    .add(0, 0, Short.MAX_VALUE)
-                    .add(olgaImagePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                .add(olgaLayersLayout.createSequentialGroup()
+                    .add(olgaImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         olgaLayersLayout.setVerticalGroup(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
             .add(olgaLayersLayout.createSequentialGroup()
-                .add(olgaPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(olgaPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
             .add(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
                 .add(olgaLayersLayout.createSequentialGroup()
                     .add(olgaImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -263,6 +217,66 @@ public class Display extends javax.swing.JFrame {
         );
         olgaLayers.setLayer(olgaImagePanel, JLayeredPane.DEFAULT_LAYER);
         olgaLayers.setLayer(olgaPanel, JLayeredPane.DEFAULT_LAYER);
+
+        freezeButton.setText("Freeze");
+        freezeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                freezeButtonActionPerformed(evt);
+            }
+        });
+
+        unfreezeButton.setText("Unfreeze");
+        unfreezeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                unfreezeButtonActionPerformed(evt);
+            }
+        });
+
+        alexeiLayers.setPreferredSize(new Dimension(600, 400));
+
+        alexeiImageHolder.setText("THIS IS THE alexei IMAGE PANEL HUE");
+        alexeiImageHolder.setPreferredSize(new Dimension(600, 400));
+        alexeiImageHolder.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt) {
+                alexeiImageHolderMousePressed(evt);
+            }
+        });
+
+        GroupLayout alexeiImagePanelLayout = new GroupLayout(alexeiImagePanel);
+        alexeiImagePanel.setLayout(alexeiImagePanelLayout);
+        alexeiImagePanelLayout.setHorizontalGroup(alexeiImagePanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(alexeiImageHolder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        );
+        alexeiImagePanelLayout.setVerticalGroup(alexeiImagePanelLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(alexeiImageHolder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        );
+
+        alexeiPanel.setBackground(new Color(204, 204, 204));
+        alexeiPanel.setMaximumSize(new Dimension(600, 400));
+        alexeiPanel.setMinimumSize(new Dimension(600, 400));
+        alexeiPanel.setPreferredSize(new Dimension(600, 400));
+        alexeiPanel.setLayout(new BorderLayout());
+
+        GroupLayout alexeiLayersLayout = new GroupLayout(alexeiLayers);
+        alexeiLayers.setLayout(alexeiLayersLayout);
+        alexeiLayersLayout.setHorizontalGroup(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(alexeiPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
+                .add(GroupLayout.TRAILING, alexeiLayersLayout.createSequentialGroup()
+                    .add(0, 0, Short.MAX_VALUE)
+                    .add(alexeiImagePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+        );
+        alexeiLayersLayout.setVerticalGroup(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
+            .add(alexeiLayersLayout.createSequentialGroup()
+                .add(alexeiPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .add(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
+                .add(alexeiLayersLayout.createSequentialGroup()
+                    .add(alexeiImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        alexeiLayers.setLayer(alexeiImagePanel, JLayeredPane.DEFAULT_LAYER);
+        alexeiLayers.setLayer(alexeiPanel, JLayeredPane.DEFAULT_LAYER);
 
         outputLabel.setForeground(new Color(255, 255, 255));
         outputLabel.setText("HUEHEUHEHEHEUEHUE");
@@ -275,7 +289,7 @@ public class Display extends javax.swing.JFrame {
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .add(layout.createSequentialGroup()
                         .add(freezeButton)
                         .add(6, 6, 6)
@@ -285,13 +299,13 @@ public class Display extends javax.swing.JFrame {
                 .add(16, 16, 16)
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
                     .add(outputLabel1)
-                    .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE)
-                    .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE))
+                    .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE)
+                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE))
                 .add(6, 6, 6)
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
                     .add(freezeButton)

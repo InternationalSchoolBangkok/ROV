@@ -37,7 +37,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="olgaLayers" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="alexeiLayers" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="freezeButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
@@ -49,7 +49,7 @@
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="outputLabel1" min="-2" max="-2" attributes="0"/>
-                  <Component id="alexeiLayers" min="-2" max="-2" attributes="0"/>
+                  <Component id="olgaLayers" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -58,8 +58,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="olgaLayers" pref="404" max="32767" attributes="0"/>
                   <Component id="alexeiLayers" pref="404" max="32767" attributes="0"/>
+                  <Component id="olgaLayers" pref="404" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -75,7 +75,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JLayeredPane" name="alexeiLayers">
+    <Container class="javax.swing.JLayeredPane" name="olgaLayers">
       <Properties>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[600, 400]"/>
@@ -86,12 +86,12 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="alexeiPanel" max="32767" attributes="0"/>
+                  <Component id="olgaPanel" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="alexeiImagePanel" max="32767" attributes="0"/>
+                      <Component id="olgaImagePanel" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -100,12 +100,12 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="alexeiPanel" max="32767" attributes="0"/>
+                  <Component id="olgaPanel" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="alexeiImagePanel" max="32767" attributes="0"/>
+                      <Component id="olgaImagePanel" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -113,7 +113,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="alexeiImagePanel">
+        <Container class="javax.swing.JPanel" name="olgaImagePanel">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[600, 400]"/>
@@ -123,30 +123,30 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="alexeiImageHolder" min="-2" max="-2" attributes="0"/>
+                  <Component id="olgaImageHolder" min="-2" max="-2" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="alexeiImageHolder" min="-2" max="-2" attributes="0"/>
+                  <Component id="olgaImageHolder" min="-2" max="-2" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="alexeiImageHolder">
+            <Component class="javax.swing.JLabel" name="olgaImageHolder">
               <Properties>
-                <Property name="text" type="java.lang.String" value="THIS IS alexei IMAGE HOLDER HUE"/>
+                <Property name="text" type="java.lang.String" value="THIS IS olga IMAGE HOLDER HUE"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[600, 400]"/>
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="alexeiImageHolderMousePressed"/>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="olgaImageHolderMousePressed"/>
               </Events>
             </Component>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="alexeiPanel">
+        <Container class="javax.swing.JPanel" name="olgaPanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -182,7 +182,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="unfreezeButtonActionPerformed"/>
       </Events>
     </Component>
-    <Container class="javax.swing.JLayeredPane" name="olgaLayers">
+    <Container class="javax.swing.JLayeredPane" name="alexeiLayers">
       <Properties>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[600, 400]"/>
@@ -192,11 +192,11 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="olgaPanel" max="32767" attributes="0"/>
+              <Component id="alexeiPanel" max="32767" attributes="0"/>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="olgaImagePanel" min="-2" max="-2" attributes="0"/>
+                      <Component id="alexeiImagePanel" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -204,12 +204,12 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <Component id="olgaPanel" min="-2" max="-2" attributes="0"/>
+                  <Component id="alexeiPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="olgaImagePanel" max="32767" attributes="0"/>
+                      <Component id="alexeiImagePanel" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -217,35 +217,35 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="olgaImagePanel">
+        <Container class="javax.swing.JPanel" name="alexeiImagePanel">
 
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="olgaImageHolder" min="-2" max="-2" attributes="0"/>
+                  <Component id="alexeiImageHolder" min="-2" max="-2" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="olgaImageHolder" min="-2" max="-2" attributes="0"/>
+                  <Component id="alexeiImageHolder" min="-2" max="-2" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="olgaImageHolder">
+            <Component class="javax.swing.JLabel" name="alexeiImageHolder">
               <Properties>
-                <Property name="text" type="java.lang.String" value="THIS IS THE olga IMAGE PANEL HUE"/>
+                <Property name="text" type="java.lang.String" value="THIS IS THE alexei IMAGE PANEL HUE"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[600, 400]"/>
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="olgaImageHolderMousePressed"/>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="alexeiImageHolderMousePressed"/>
               </Events>
             </Component>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="olgaPanel">
+        <Container class="javax.swing.JPanel" name="alexeiPanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
