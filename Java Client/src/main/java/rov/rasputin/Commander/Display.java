@@ -16,6 +16,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -167,7 +169,8 @@ public class Display extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         mariaPanel = new JPanel();
         alexeiPanel = new JPanel();
@@ -176,6 +179,7 @@ public class Display extends javax.swing.JFrame {
         stabilizationStateLabel = new JLabel();
         clawStateLabel = new JLabel();
         rasputinStateLabel = new JLabel();
+        fcrBtn = new JButton();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("ROV Rasputin Commander");
@@ -236,8 +240,24 @@ public class Display extends javax.swing.JFrame {
         rasputinStateLabel.setText("Rasputin State");
         getContentPane().add(rasputinStateLabel, new AbsoluteConstraints(1000, 450, -1, -1));
 
+        fcrBtn.setText("Force Camera Reconnect");
+        fcrBtn.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                fcrBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(fcrBtn, new AbsoluteConstraints(1000, 770, -1, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void fcrBtnActionPerformed(ActionEvent evt)//GEN-FIRST:event_fcrBtnActionPerformed
+    {//GEN-HEADEREND:event_fcrBtnActionPerformed
+        disconnectCam();
+        connectCam();
+    }//GEN-LAST:event_fcrBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -263,6 +283,7 @@ public class Display extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JPanel alexeiPanel;
     public JLabel clawStateLabel;
+    private JButton fcrBtn;
     private JPanel mariaPanel;
     public JPanel meterset0;
     private JPanel olgaPanel;
