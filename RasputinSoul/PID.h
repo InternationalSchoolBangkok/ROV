@@ -17,6 +17,7 @@ public:
     void setPV(double value);
     void setSP(double value);
     double step(double dt);
+    double getSP();
     void enableP(bool enable);
     void enableI(bool enable);
     void enableD(bool enable);

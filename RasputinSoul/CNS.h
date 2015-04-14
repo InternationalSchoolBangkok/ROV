@@ -31,7 +31,7 @@ private:
     float depth;
     signed char motor[8];
     float lx, ly, rx, ry;
-    bool l1, l2, r1, r2, start, cross, circle,down,right;
+    bool l1, l2, r1, r2, start, cross, circle,down,right,up;
 
     void syncIMU();
     void syncCommander();

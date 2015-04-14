@@ -79,6 +79,7 @@ void CNS::syncCommander() {
     cross = bs2[2];
     down = bs2[6];
     right = bs2[4];
+    up = bs2[7];
     //heightPID->setPIDGainz(rov->get(23), rov->get(24), rov->get(25));
     //rollPID->setPIDGainz(rov->get(26), rov->get(27), rov->get(28));
     //pitchPID->setPIDGainz(rov->get(29), rov->get(30), rov->get(31));
@@ -94,8 +95,8 @@ void* CNS::run() {
     int sleep = 1e6 / RUNRATE;
 
     float motorPower[8];
-    float turnGain = .75;
-    float straifeGain = 1.0;
+    float turnGain = .8;
+    float straifeGain = .8;
 
     long lastt = getMicrotime();
     long currentt = getMicrotime();
@@ -113,6 +114,7 @@ void* CNS::run() {
     int startBeginI = 0;
     bool clawLocked = false;
     char hue;
+    double OGSP = pitchPID->getSP();
     bitset<8> stateBS; //first to last: stabilization state, claw state, on/rasputin state
     stateBS.set(0,false);
     stateBS.set(1,false);
@@ -189,6 +191,11 @@ void* CNS::run() {
         } else if (r2) {
             heighto = 1;
             heightPID->setSP(depth);
+        }
+        if(up){
+            pitchPID->setSP(OGSP-0.2);
+        }else{
+            pitchPID->setSP(OGSP);
         }
         if (i % 5 == 0) {
             printf("R:%.5f\tP:%.5f\tH:%.5f\tSum:%.5f\tD:%.5f\n", rollo, pitcho,

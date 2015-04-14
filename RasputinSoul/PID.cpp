@@ -27,7 +27,9 @@ void PID::setSP(double value) {
     previousError = SP - PV;
     integral = 0;
 }
-
+double PID::getSP(){
+    return SP;
+}
 void PID::enableD(bool enable) {
     doD = enable;
     previousError = PV;

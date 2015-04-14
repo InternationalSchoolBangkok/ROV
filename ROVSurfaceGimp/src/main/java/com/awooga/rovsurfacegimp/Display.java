@@ -514,12 +514,12 @@ public class Display extends javax.swing.JFrame {
 
 //        size = C*(pixsize/(A*(shift^B)))^D;       
 //       pow(shift, B);     
-//        size = C*(pixsize/(A*(pow(shift,B))))^D;
-        C = 0.0006301;
-        A = 0.003312;
-        B = 0.9404;
-        D = 1.065;
-        E = 0.2738;
+//        size = C*(pixsize/(A*(pow(shift,B))))^D;     
+        A = 0.001628;
+        B = 1.103;
+        C = 0.0003355;
+        D = 1.146;
+        E = -0.02076;
 
         double size1 = pow(shift, B);
         System.out.println("size1: " + size1);
