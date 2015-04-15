@@ -186,7 +186,7 @@ void* CNS::run() {
         //calculation for height needed
 
         if (r1) {
-            heighto = -.5;
+            heighto = -1;
             heightPID->setSP(depth);
         } else if (r2) {
             heighto = 1;
