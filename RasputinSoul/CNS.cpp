@@ -95,8 +95,8 @@ void* CNS::run() {
     int sleep = 1e6 / RUNRATE;
 
     float motorPower[8];
-    float turnGain = .8;
-    float straifeGain = .8;
+    float turnGain = 1;
+    float straifeGain = 1;
 
     long lastt = getMicrotime();
     long currentt = getMicrotime();
