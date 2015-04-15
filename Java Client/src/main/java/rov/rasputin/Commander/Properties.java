@@ -29,13 +29,15 @@ package rov.rasputin.Commander;
  */
 public class Properties extends java.util.Properties
 {
-    
-    public Boolean getBoolean(String key){
+
+    public Boolean getBoolean(String key)
+    {
         return Boolean.parseBoolean(getProperty(key));
     }
-    
-    public Integer getInt(String key){
+
+    public Integer getInt(String key)
+    {
         return Integer.parseInt(getProperty(key));
     }
-    
+
 }

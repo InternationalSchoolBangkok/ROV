@@ -37,130 +37,135 @@ import rov.rasputin.Communication.ROV;
  *
  * @author Kolatat Thangkasemvathana <kolatat.t@gmail.com>
  */
-public class Matumbeicholas extends javax.swing.JFrame {
-    
+public class Matumbeicholas extends javax.swing.JFrame
+{
+
     private ROV rasputin;
     private DefaultTableModel dtm;
     private Worker myWorker;
-    
+
     private Grapher[] grapher;
 
     /**
      * Creates new form PIDTuner
      */
-    public Matumbeicholas() {
+    public Matumbeicholas()
+    {
         try {
             rasputin = new ROV("10.69.69.69", 6969, 6969, 32, 50);
-        } catch (Exception ex) {
+        } catch(Exception ex) {
             Logger.getLogger(Matumbeicholas.class.getName()).log(Level.SEVERE, null, ex);
         }
         myWorker = new Worker();
-        
+
         initComponents();
-        
+
         dtm = (DefaultTableModel) stateTable.getModel();
-        
+
         rasputin.startTXRX();
         myWorker.start();
-        
+
         grapher = new Grapher[3];
         grapher[0] = new Grapher(graph0);
         grapher[0].start();
     }
-    
-    private class Worker extends Thread {
+
+    private class Worker extends Thread
+    {
 
         @Override
-        public void run() {
-            while(true){
-                for(int i=0;i<32;++i){
+        public void run()
+        {
+            while(true) {
+                for(int i = 0; i < 32; ++i) {
                     dtm.setValueAt(rasputin.get(i), i, 2);
                 }
                 try {
                     Thread.sleep(50);
-                } catch (InterruptedException ex) {
+                } catch(InterruptedException ex) {
                     Logger.getLogger(Matumbeicholas.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
-        
+
     }
-    
-    private class Grapher extends Thread {
-        
-        
+
+    private class Grapher extends Thread
+    {
 
         private JPanel panel;
         public int gMode;
-        public int channel=0, resX=20, resY=32, previousValue;
+        public int channel = 0, resX = 20, resY = 32, previousValue;
         public double integral;
         public int gx = 0;
         private Graphics2D g;
-        
-        public Grapher(JPanel panel) {
-            this.panel=panel;
+
+        public Grapher(JPanel panel)
+        {
+            this.panel = panel;
             gMode = 0;
             g = (Graphics2D) panel.getGraphics();
         }
-        
-        public void reset(){
+
+        public void reset()
+        {
             previousValue = rasputin.get(channel);
-            integral=0;
-            gx=0;
+            integral = 0;
+            gx = 0;
             g.setColor(Color.white);
             g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
         }
 
         @Override
-        public void run() {
+        public void run()
+        {
             //reset();
-            
+
             int oy;
             double yscale;
-            double y=0;
-            
-            while(true){
-                if(gx>panel.getWidth()){
-                    gx%=panel.getWidth();
-                    g.setColor(new Color(255,255,255,200));
+            double y = 0;
+
+            while(true) {
+                if(gx > panel.getWidth()) {
+                    gx %= panel.getWidth();
+                    g.setColor(new Color(255, 255, 255, 200));
                     g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
                 }
-                
-                oy = panel.getHeight()/2;
-                yscale = panel.getHeight()/(double)resY;
-                
+
+                oy = panel.getHeight() / 2;
+                yscale = panel.getHeight() / (double) resY;
+
                 g.setColor(Color.white);
-                g.drawLine(gx, 0, gx, oy*2);
+                g.drawLine(gx, 0, gx, oy * 2);
                 g.setColor(Color.black);
-                g.drawLine(gx+1,0,gx+1,oy*2);
-                
-                switch(gMode){
-                    case 0:
-                        y = rasputin.get(channel);
-                        break;
-                    case 1:
-                        integral+=rasputin.get(channel)*resX/1000d;
-                        y = (int) integral;
-                        break;
-                    case 2:
-                        y = (rasputin.get(channel)-previousValue)/(resX/1000d);
-                        previousValue = rasputin.get(channel);
-                        break;
+                g.drawLine(gx + 1, 0, gx + 1, oy * 2);
+
+                switch(gMode) {
+                case 0:
+                    y = rasputin.get(channel);
+                    break;
+                case 1:
+                    integral += rasputin.get(channel) * resX / 1000d;
+                    y = (int) integral;
+                    break;
+                case 2:
+                    y = (rasputin.get(channel) - previousValue) / (resX / 1000d);
+                    previousValue = rasputin.get(channel);
+                    break;
                 }
-                
+
                 g.setColor(Color.blue);
-                g.drawLine(gx, (int) (oy-y*yscale), gx, (int) (oy-y*yscale));
-                       
+                g.drawLine(gx, (int) (oy - y * yscale), gx, (int) (oy - y * yscale));
+
                 gx++;
                 try {
                     Thread.sleep(resX);
-                } catch (InterruptedException ex) {
+                } catch(InterruptedException ex) {
                     Logger.getLogger(Matumbeicholas.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
-        
-        
+
     }
 
     /**
@@ -387,7 +392,7 @@ public class Matumbeicholas extends javax.swing.JFrame {
     }//GEN-LAST:event_g0modeActionPerformed
 
     private void g0channelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_g0channelActionPerformed
-        grapher[0].channel=Integer.parseInt(g0channel.getSelectedItem().toString());
+        grapher[0].channel = Integer.parseInt(g0channel.getSelectedItem().toString());
         grapher[0].reset();
     }//GEN-LAST:event_g0channelActionPerformed
 
@@ -397,7 +402,7 @@ public class Matumbeicholas extends javax.swing.JFrame {
     }//GEN-LAST:event_g0resXActionPerformed
 
     private void g0resYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_g0resYActionPerformed
-        grapher[0].resY=Integer.parseInt(g0resY.getSelectedItem().toString());
+        grapher[0].resY = Integer.parseInt(g0resY.getSelectedItem().toString());
         grapher[0].reset();
     }//GEN-LAST:event_g0resYActionPerformed
 
@@ -406,25 +411,26 @@ public class Matumbeicholas extends javax.swing.JFrame {
     }//GEN-LAST:event_g0resetActionPerformed
 
     private void setBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBtnActionPerformed
-        for(int i=0;i<32;i++){
+        for(int i = 0; i < 32; i++) {
             int val = (Byte) dtm.getValueAt(i, 3);
             rasputin.set(i, val);
-            System.out.printf("%d=%d,",i,val);
+            System.out.printf("%d=%d,", i, val);
         }
         System.out.println();
     }//GEN-LAST:event_setBtnActionPerformed
 
     private void resetBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
-for(int i=0;i<32;i++){
-    dtm.setValueAt(0, i, 3);
-    rasputin.set(i, 0);
-}
+        for(int i = 0; i < 32; i++) {
+            dtm.setValueAt(0, i, 3);
+            rasputin.set(i, 0);
+        }
     }//GEN-LAST:event_resetBtnActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         /* Set the Nimbus look and feel */
         //</editor-fold>
 

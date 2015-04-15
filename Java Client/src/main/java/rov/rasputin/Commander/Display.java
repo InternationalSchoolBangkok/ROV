@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,57 +32,65 @@ import org.netbeans.lib.awtextra.AbsoluteLayout;
  *
  * @author 15998
  */
-public class Display extends javax.swing.JFrame {
+public class Display extends javax.swing.JFrame
+{
 
     private Worker worker;
     private Properties settings;
     private Webcam olga, alexei, maria;
-    private boolean isFullscreen = false;
 
-    private void loadSettings() {
+    public PS3Controller controller;
+
+    private void loadSettings()
+    {
         Webcam.setDriver(new IpCamDriver());
 
         try {
             settings = new Properties();
             InputStream in = getClass().getResourceAsStream("settings.properties");
-            if (in == null) {
+            if(in == null) {
                 System.out.println("ERROR");
             }
             settings.load(in);
             in.close();
-        } catch (IOException ex) {
+        } catch(IOException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
-    private void createAndStartWorker() {
+    private void createAndStartWorker()
+    {
         worker = new Worker(this, settings);
         worker.start();
     }
 
-    private void createCam() {
+    private void createCam()
+    {
         String user = settings.getProperty("camUser");
         String pass = settings.getProperty("camPass");
         IpCamAuth auth = new IpCamAuth(user, pass);
 
         IpCamDeviceRegistry.unregisterAll();
         String format = "http://%s/videostream.cgi?loginuse=%s&loginpas=%s";
-        Dimension d = new Dimension(600, 400);
+        Dimension d = new Dimension(585, 390);
         try {
             IpCamDeviceRegistry.register("Olga", String.format(format, settings.getProperty("olgaAddr"), user, pass), IpCamMode.PUSH, auth).setResolution(d);
             IpCamDeviceRegistry.register("Alexei", String.format(format, settings.getProperty("alexeiAddr"), user, pass), IpCamMode.PUSH, auth).setResolution(d);
             IpCamDeviceRegistry.register("Maria", String.format(format, settings.getProperty("mariaAddr"), user, pass), IpCamMode.PUSH, auth).setResolution(d);
-        } catch (MalformedURLException ex) {
+        } catch(MalformedURLException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void connectCam() {
+    private void connectCam()
+    {
         olga = Webcam.getWebcams().get(0);
-        olga.setImageTransformer(new WebcamImageTransformer() {
+        olga.setImageTransformer(new WebcamImageTransformer()
+        {
             @Override
-            public BufferedImage transform(BufferedImage image) {
+            public BufferedImage transform(BufferedImage image)
+            {
                 int w = image.getWidth();
                 int h = image.getHeight();
                 BufferedImage modified = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
@@ -124,7 +133,8 @@ public class Display extends javax.swing.JFrame {
         pack();
     }
 
-    private void disconnectCam() {
+    private void disconnectCam()
+    {
         olga.close();
         alexei.close();
         maria.close();
@@ -133,24 +143,12 @@ public class Display extends javax.swing.JFrame {
     /**
      * Creates new form Interface
      */
-    public Display() {
+    public Display()
+    {
         loadSettings();
         createCam();
         initComponents();
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-
-        /*GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
-         .getDefaultScreenDevice();
-         if(gd.isFullScreenSupported()){
-         gd.setFullScreenWindow(this);
-         isFullscreen = true;
-         } else {
-         System.err.println("Full screen not supported.");
-         }
-        
-         if(settings.getBoolean("debugMode")){
-         Debugger.main(null);
-         }*/
+        //setExtendedState(JFrame.MAXIMIZED_BOTH);
         getContentPane().setBackground(Color.black);
         createAndStartWorker();
         connectCam();
@@ -169,94 +167,139 @@ public class Display extends javax.swing.JFrame {
         mariaPanel = new JPanel();
         alexeiPanel = new JPanel();
         olgaPanel = new JPanel();
-        meterset0 = new JPanel();
+        meterset = new JPanel();
         stabilizationStateLabel = new JLabel();
         clawStateLabel = new JLabel();
         rasputinStateLabel = new JLabel();
-        fcrBtn = new JButton();
+        reconnectCamBtn = new JButton();
+        depthLabel = new JLabel();
+        reconnectControllerBtn = new JButton();
+        quitBtn = new JButton();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("ROV Rasputin Commander");
         setBackground(new Color(0, 0, 0));
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        setMinimumSize(new Dimension(1200, 780));
         setName("rovCommander"); // NOI18N
         setUndecorated(true);
-        setResizable(false);
         getContentPane().setLayout(new AbsoluteLayout());
 
         mariaPanel.setBackground(new Color(0, 0, 255));
         mariaPanel.setAlignmentX(0.0F);
         mariaPanel.setAlignmentY(0.0F);
-        mariaPanel.setMaximumSize(new Dimension(600, 400));
-        mariaPanel.setMinimumSize(new Dimension(600, 400));
-        mariaPanel.setPreferredSize(new Dimension(600, 400));
+        mariaPanel.setMaximumSize(new Dimension(585, 390));
+        mariaPanel.setMinimumSize(new Dimension(585, 390));
+        mariaPanel.setPreferredSize(new Dimension(585, 390));
         mariaPanel.setLayout(new BorderLayout());
-        getContentPane().add(mariaPanel, new AbsoluteConstraints(0, 400, -1, -1));
+        getContentPane().add(mariaPanel, new AbsoluteConstraints(0, 390, -1, -1));
 
         alexeiPanel.setBackground(new Color(0, 0, 255));
-        alexeiPanel.setMaximumSize(new Dimension(600, 400));
-        alexeiPanel.setMinimumSize(new Dimension(600, 400));
-        alexeiPanel.setPreferredSize(new Dimension(600, 400));
+        alexeiPanel.setMaximumSize(new Dimension(585, 390));
+        alexeiPanel.setMinimumSize(new Dimension(585, 390));
+        alexeiPanel.setName(""); // NOI18N
+        alexeiPanel.setPreferredSize(new Dimension(585, 390));
         alexeiPanel.setLayout(new BorderLayout());
         getContentPane().add(alexeiPanel, new AbsoluteConstraints(0, 0, -1, -1));
 
         olgaPanel.setBackground(new Color(0, 0, 255));
-        olgaPanel.setMaximumSize(new Dimension(600, 400));
-        olgaPanel.setMinimumSize(new Dimension(600, 400));
-        olgaPanel.setPreferredSize(new Dimension(600, 400));
+        olgaPanel.setMaximumSize(new Dimension(585, 390));
+        olgaPanel.setMinimumSize(new Dimension(585, 390));
+        olgaPanel.setPreferredSize(new Dimension(585, 390));
         olgaPanel.setLayout(new BorderLayout());
-        getContentPane().add(olgaPanel, new AbsoluteConstraints(600, 0, -1, -1));
+        getContentPane().add(olgaPanel, new AbsoluteConstraints(585, 0, -1, -1));
 
-        meterset0.setBackground(new Color(0, 0, 0));
-        meterset0.setMaximumSize(new Dimension(380, 380));
-        meterset0.setMinimumSize(new Dimension(380, 380));
+        meterset.setBackground(new Color(0, 0, 0));
+        meterset.setMaximumSize(new Dimension(380, 380));
+        meterset.setMinimumSize(new Dimension(380, 380));
 
-        GroupLayout meterset0Layout = new GroupLayout(meterset0);
-        meterset0.setLayout(meterset0Layout);
-        meterset0Layout.setHorizontalGroup(meterset0Layout.createParallelGroup(GroupLayout.LEADING)
+        GroupLayout metersetLayout = new GroupLayout(meterset);
+        meterset.setLayout(metersetLayout);
+        metersetLayout.setHorizontalGroup(metersetLayout.createParallelGroup(GroupLayout.LEADING)
             .add(0, 380, Short.MAX_VALUE)
         );
-        meterset0Layout.setVerticalGroup(meterset0Layout.createParallelGroup(GroupLayout.LEADING)
+        metersetLayout.setVerticalGroup(metersetLayout.createParallelGroup(GroupLayout.LEADING)
             .add(0, 380, Short.MAX_VALUE)
         );
 
-        getContentPane().add(meterset0, new AbsoluteConstraints(610, 410, 380, 380));
+        getContentPane().add(meterset, new AbsoluteConstraints(590, 395, 380, 380));
 
+        stabilizationStateLabel.setFont(stabilizationStateLabel.getFont().deriveFont(stabilizationStateLabel.getFont().getStyle() | Font.BOLD, stabilizationStateLabel.getFont().getSize()+4));
         stabilizationStateLabel.setForeground(new Color(255, 255, 255));
         stabilizationStateLabel.setText("Stabilization State");
         getContentPane().add(stabilizationStateLabel, new AbsoluteConstraints(1000, 410, -1, -1));
 
+        clawStateLabel.setFont(clawStateLabel.getFont().deriveFont(clawStateLabel.getFont().getStyle() | Font.BOLD, clawStateLabel.getFont().getSize()+4));
         clawStateLabel.setForeground(new Color(255, 255, 255));
         clawStateLabel.setText("Claw State");
-        getContentPane().add(clawStateLabel, new AbsoluteConstraints(1000, 430, -1, -1));
+        getContentPane().add(clawStateLabel, new AbsoluteConstraints(1000, 440, -1, -1));
 
+        rasputinStateLabel.setFont(rasputinStateLabel.getFont().deriveFont(rasputinStateLabel.getFont().getStyle() | Font.BOLD, rasputinStateLabel.getFont().getSize()+4));
         rasputinStateLabel.setForeground(new Color(255, 255, 255));
         rasputinStateLabel.setText("Rasputin State");
-        getContentPane().add(rasputinStateLabel, new AbsoluteConstraints(1000, 450, -1, -1));
+        getContentPane().add(rasputinStateLabel, new AbsoluteConstraints(1000, 470, -1, -1));
 
-        fcrBtn.setText("Force Camera Reconnect");
-        fcrBtn.addActionListener(new ActionListener()
+        reconnectCamBtn.setText("Force Camera Reconnect");
+        reconnectCamBtn.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent evt)
             {
-                fcrBtnActionPerformed(evt);
+                reconnectCamBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(fcrBtn, new AbsoluteConstraints(1000, 770, -1, -1));
+        getContentPane().add(reconnectCamBtn, new AbsoluteConstraints(990, 710, 190, 60));
+
+        depthLabel.setFont(depthLabel.getFont().deriveFont(depthLabel.getFont().getStyle() | Font.BOLD, depthLabel.getFont().getSize()+4));
+        depthLabel.setForeground(new Color(0, 255, 0));
+        depthLabel.setText("Depth");
+        getContentPane().add(depthLabel, new AbsoluteConstraints(1000, 500, -1, -1));
+
+        reconnectControllerBtn.setText("Force Controller Reconnect");
+        reconnectControllerBtn.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                reconnectControllerBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(reconnectControllerBtn, new AbsoluteConstraints(990, 640, 190, 60));
+
+        quitBtn.setText("Exit Commander");
+        quitBtn.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                quitBtnActionPerformed(evt);
+            }
+        });
+        getContentPane().add(quitBtn, new AbsoluteConstraints(990, 570, 190, 60));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void fcrBtnActionPerformed(ActionEvent evt)//GEN-FIRST:event_fcrBtnActionPerformed
-    {//GEN-HEADEREND:event_fcrBtnActionPerformed
+    private void reconnectCamBtnActionPerformed(ActionEvent evt)//GEN-FIRST:event_reconnectCamBtnActionPerformed
+    {//GEN-HEADEREND:event_reconnectCamBtnActionPerformed
         disconnectCam();
         connectCam();
-    }//GEN-LAST:event_fcrBtnActionPerformed
+    }//GEN-LAST:event_reconnectCamBtnActionPerformed
+
+    private void reconnectControllerBtnActionPerformed(ActionEvent evt)//GEN-FIRST:event_reconnectControllerBtnActionPerformed
+    {//GEN-HEADEREND:event_reconnectControllerBtnActionPerformed
+        controller = new PS3Controller();
+        controller.poll();
+    }//GEN-LAST:event_reconnectControllerBtnActionPerformed
+
+    private void quitBtnActionPerformed(ActionEvent evt)//GEN-FIRST:event_quitBtnActionPerformed
+    {//GEN-HEADEREND:event_quitBtnActionPerformed
+        disconnectCam();
+        System.exit(0);
+    }//GEN-LAST:event_quitBtnActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         /* Set the system look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -264,7 +307,7 @@ public class Display extends javax.swing.JFrame {
          */
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch(ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Display.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -277,12 +320,14 @@ public class Display extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JPanel alexeiPanel;
     public JLabel clawStateLabel;
-    private JButton fcrBtn;
+    public JLabel depthLabel;
     private JPanel mariaPanel;
-    public JPanel meterset0;
+    public JPanel meterset;
     private JPanel olgaPanel;
+    private JButton quitBtn;
     public JLabel rasputinStateLabel;
+    private JButton reconnectCamBtn;
+    private JButton reconnectControllerBtn;
     public JLabel stabilizationStateLabel;
     // End of variables declaration//GEN-END:variables
 }
-
