@@ -6,21 +6,16 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group/>
         <group name="ROV">
-            <file>file:/E:/Projects/ROV/ROV/RasputinSoul/Thread.cpp</file>
-            <file>file:/E:/Projects/ROV/ROV/RasputinSoul/State.cpp</file>
-            <file>file:/E:/Projects/ROV/ROV/RasputinSoul/Thread.h</file>
             <file>file:/E:/Projects/ROV/ROV/RasputinSoul/CNS.cpp</file>
-            <file>file:/E:/Projects/ROV/ROV/RasputinSoul/PID.h</file>
-            <file>file:/E:/Projects/ROV/ROV/RasputinSoul/Main.cpp</file>
-            <file>file:/E:/Projects/ROV/ROV/RasputinSoul/PID.cpp</file>
-            <file>file:/E:/Projects/ROV/ROV/RasputinSoul/CNS.h</file>
-            <file>file:/E:/Projects/ROV/ROV/RasputinSoul/IMU.cpp</file>
-            <file>file:/E:/Projects/ROV/ROV/RasputinSoul/IMU.h</file>
         </group>
+<<<<<<< HEAD
         <group>
             <file>file:/Users/e1615998/Desktop/ROV/ROV%20Code/RasputinSoul/CNS.h</file>
             <file>file:/Users/e1615998/Desktop/ROV/ROV%20Code/RasputinSoul/CNS.cpp</file>
         </group>
+=======
+>>>>>>> origin/master
     </open-files>
 </project-private>
