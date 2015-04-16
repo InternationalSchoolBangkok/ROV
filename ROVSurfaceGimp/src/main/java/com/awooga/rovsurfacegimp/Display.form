@@ -39,10 +39,11 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="alexeiLayers" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="freezeButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="unfreezeButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="outputLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -51,25 +52,34 @@
                   <Component id="outputLabel1" min="-2" max="-2" attributes="0"/>
                   <Component id="olgaLayers" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="mariaPanel" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="alexeiLayers" pref="404" max="32767" attributes="0"/>
-                  <Component id="olgaLayers" pref="404" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="alexeiLayers" max="32767" attributes="0"/>
+                  <Component id="olgaLayers" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="freezeButton" min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="freezeButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="unfreezeButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="outputLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="outputLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <Component id="outputLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="mariaPanel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -99,14 +109,11 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Component id="olgaPanel" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
+              <Component id="olgaPanel" min="-2" max="-2" attributes="0"/>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="olgaImagePanel" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="olgaImagePanel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -203,14 +210,11 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <Component id="alexeiPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-              </Group>
+              <Component id="alexeiPanel" min="-2" max="-2" attributes="0"/>
               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="alexeiImagePanel" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="alexeiImagePanel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="6" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -281,5 +285,14 @@
         <Property name="text" type="java.lang.String" value="HUEHEUHEHEHEUEHUE"/>
       </Properties>
     </Component>
+    <Container class="javax.swing.JPanel" name="mariaPanel">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="0" green="99" red="99" type="rgb"/>
+        </Property>
+      </Properties>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+    </Container>
   </SubComponents>
 </Form>

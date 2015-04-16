@@ -20,22 +20,17 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import static java.lang.Math.pow;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.input.KeyCode;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import org.jdesktop.layout.GroupLayout;
 
@@ -55,10 +50,11 @@ public class Display extends javax.swing.JFrame {
         IpCamDeviceRegistry.unregisterAll();
         String format = "http://%s/videostream.cgi?loginuse=%s&loginpas=%s";
         Dimension d = new Dimension(600, 400);
+        Dimension d2 = new Dimension(400,300);
         try {
             IpCamDeviceRegistry.register("Olga", String.format(format, "10.69.69.74:6969", user, pass), IpCamMode.PUSH, auth).setResolution(d);
             IpCamDeviceRegistry.register("Alexei", String.format(format, "10.69.69.75:6969", user, pass), IpCamMode.PUSH, auth).setResolution(d);
-            IpCamDeviceRegistry.register("Maria", String.format(format, "10.69.69.76:6969", user, pass), IpCamMode.PUSH, auth).setResolution(d);
+            IpCamDeviceRegistry.register("Maria", String.format(format, "10.69.69.76:6969", user, pass), IpCamMode.PUSH, auth).setResolution(d2);
         } catch (MalformedURLException ex) {
             Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -66,18 +62,15 @@ public class Display extends javax.swing.JFrame {
 
     private void connectCam() {
         olga = Webcam.getWebcams().get(0);
-        olga.setImageTransformer(new WebcamImageTransformer() {
-            @Override
-            public BufferedImage transform(BufferedImage image) {
-                int w = image.getWidth();
-                int h = image.getHeight();
-                BufferedImage modified = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-                Graphics2D g2 = modified.createGraphics();
-                g2.drawImage(image, w, h, -w, -h, null);
-                g2.dispose();
-                modified.flush();
-                return modified;
-            }
+        olga.setImageTransformer((BufferedImage image) -> {
+            int w = image.getWidth();
+            int h = image.getHeight();
+            BufferedImage modified = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2 = modified.createGraphics();
+            g2.drawImage(image, w, h, -w, -h, null);
+            g2.dispose();
+            modified.flush();
+            return modified;
         });
         WebcamPanel subOlga = new WebcamPanel(olga);
         subOlga.setFPSDisplayed(true);
@@ -98,23 +91,23 @@ public class Display extends javax.swing.JFrame {
         alexeiPanel.revalidate();
         alexeiPanel.repaint();
 
-        /*maria = Webcam.getWebcams().get(2);
-         WebcamPanel subMaria = new WebcamPanel(maria);
-         subMaria.setFPSDisplayed(true);
-         subMaria.setDisplayDebugInfo(true);
-         subMaria.setFPSLimit(60);
-         mariaPanel.removeAll();
-         mariaPanel.add(subMaria);
-         mariaPanel.revalidate();
-         mariaPanel.repaint();
-         */
+        maria = Webcam.getWebcams().get(2);
+        WebcamPanel subMaria = new WebcamPanel(maria);
+        subMaria.setFPSDisplayed(true);
+        subMaria.setDisplayDebugInfo(true);
+        subMaria.setFPSLimit(60);
+        mariaPanel.removeAll();
+        mariaPanel.add(subMaria);
+        mariaPanel.revalidate();
+        mariaPanel.repaint();
+
         pack();
     }
 
     private void disconnectCam() {
         olga.close();
         alexei.close();
-        //maria.close();
+        maria.close();
     }
 
     /**
@@ -155,6 +148,7 @@ public class Display extends javax.swing.JFrame {
         alexeiPanel = new JPanel();
         outputLabel = new JLabel();
         outputLabel1 = new JLabel();
+        mariaPanel = new JPanel();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("ROV Surface Gimp");
@@ -207,13 +201,11 @@ public class Display extends javax.swing.JFrame {
                     .addContainerGap()))
         );
         olgaLayersLayout.setVerticalGroup(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(olgaLayersLayout.createSequentialGroup()
-                .add(olgaPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .add(olgaPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
             .add(olgaLayersLayout.createParallelGroup(GroupLayout.LEADING)
                 .add(olgaLayersLayout.createSequentialGroup()
-                    .add(olgaImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+                    .add(olgaImagePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .add(0, 0, Short.MAX_VALUE)))
         );
         olgaLayers.setLayer(olgaImagePanel, JLayeredPane.DEFAULT_LAYER);
         olgaLayers.setLayer(olgaPanel, JLayeredPane.DEFAULT_LAYER);
@@ -267,13 +259,11 @@ public class Display extends javax.swing.JFrame {
                     .add(alexeiImagePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
         );
         alexeiLayersLayout.setVerticalGroup(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
-            .add(alexeiLayersLayout.createSequentialGroup()
-                .add(alexeiPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .add(alexeiPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
             .add(alexeiLayersLayout.createParallelGroup(GroupLayout.LEADING)
                 .add(alexeiLayersLayout.createSequentialGroup()
-                    .add(alexeiImagePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+                    .add(alexeiImagePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .add(0, 6, Short.MAX_VALUE)))
         );
         alexeiLayers.setLayer(alexeiImagePanel, JLayeredPane.DEFAULT_LAYER);
         alexeiLayers.setLayer(alexeiPanel, JLayeredPane.DEFAULT_LAYER);
@@ -284,6 +274,9 @@ public class Display extends javax.swing.JFrame {
         outputLabel1.setForeground(new Color(255, 255, 255));
         outputLabel1.setText("HUEHEUHEHEHEUEHUE");
 
+        mariaPanel.setBackground(new Color(153, 153, 0));
+        mariaPanel.setLayout(new BorderLayout());
+
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.LEADING)
@@ -291,28 +284,37 @@ public class Display extends javax.swing.JFrame {
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
                     .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .add(layout.createSequentialGroup()
+                        .addContainerGap()
                         .add(freezeButton)
-                        .add(6, 6, 6)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(unfreezeButton)
-                        .add(18, 18, 18)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(outputLabel)))
                 .add(16, 16, 16)
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
                     .add(outputLabel1)
-                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .add(0, 0, Short.MAX_VALUE))
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(mariaPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
+                .add(layout.createParallelGroup(GroupLayout.LEADING, false)
+                    .add(alexeiLayers, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(olgaLayers, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(alexeiLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE)
-                    .add(olgaLayers, GroupLayout.PREFERRED_SIZE, 404, Short.MAX_VALUE))
-                .add(6, 6, 6)
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                    .add(freezeButton)
                     .add(layout.createParallelGroup(GroupLayout.BASELINE)
+                        .add(freezeButton)
                         .add(unfreezeButton)
-                        .add(outputLabel)
-                        .add(outputLabel1))))
+                        .add(outputLabel))
+                    .add(outputLabel1))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(mariaPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -358,7 +360,6 @@ public class Display extends javax.swing.JFrame {
     BufferedImage olgaImage;
     int llx, lly, lrx, lry;
     private void alexeiImageHolderMousePressed(MouseEvent evt) {//GEN-FIRST:event_alexeiImageHolderMousePressed
-        // TODO add your handling code here:
         System.out.printf("[left] selected (%d,%d).%n", evt.getX(), evt.getY());
         int x = evt.getX();
         int y = evt.getY();
@@ -515,11 +516,11 @@ public class Display extends javax.swing.JFrame {
 //        size = C*(pixsize/(A*(shift^B)))^D;       
 //       pow(shift, B);     
 //        size = C*(pixsize/(A*(pow(shift,B))))^D;     
-        A=0.001467;
-        B=1.119;
-        E=0.1522;
-        C=0.0007641;
-        D=1.034;
+        A = 0.001467;
+        B = 1.119;
+        E = 0.1522;
+        C = 0.0007641;
+        D = 1.034;
 
         double size1 = pow(shift, B);
         System.out.println("size1: " + size1);
@@ -555,16 +556,15 @@ public class Display extends javax.swing.JFrame {
         outputLabel.setText(String.format("left(%.0f-%.0f), right(%.0f-%.0f), size(%s)", lx1, lx2, rx1, rx2, sizeString));
 
         // NEW SHIT FOR Y
-       
-        A1=	0.00002836;
+        A1 = 0.00002836;
 
-        B1=	1.812;
+        B1 = 1.812;
 
-        E1=	0.06488;
+        E1 = 0.06488;
 
-        C1=	0.001247;
+        C1 = 0.001247;
 
-        D1=	0.9617;
+        D1 = 0.9617;
 
         double ysize1 = pow(shift1, B1);
         System.out.println("ysize1: " + ysize1);
@@ -606,6 +606,7 @@ public class Display extends javax.swing.JFrame {
     private JLayeredPane alexeiLayers;
     private JPanel alexeiPanel;
     private JButton freezeButton;
+    private JPanel mariaPanel;
     private JLabel olgaImageHolder;
     private JPanel olgaImagePanel;
     private JLayeredPane olgaLayers;
