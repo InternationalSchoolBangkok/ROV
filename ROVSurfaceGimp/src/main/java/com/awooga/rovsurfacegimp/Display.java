@@ -515,11 +515,11 @@ public class Display extends javax.swing.JFrame {
 //        size = C*(pixsize/(A*(shift^B)))^D;       
 //       pow(shift, B);     
 //        size = C*(pixsize/(A*(pow(shift,B))))^D;     
-        A = 0.001628;
-        B = 1.103;
-        C = 0.0003355;
-        D = 1.146;
-        E = -0.02076;
+        A=0.001467;
+        B=1.119;
+        E=0.1522;
+        C=0.0007641;
+        D=1.034;
 
         double size1 = pow(shift, B);
         System.out.println("size1: " + size1);
@@ -555,11 +555,16 @@ public class Display extends javax.swing.JFrame {
         outputLabel.setText(String.format("left(%.0f-%.0f), right(%.0f-%.0f), size(%s)", lx1, lx2, rx1, rx2, sizeString));
 
         // NEW SHIT FOR Y
-        C1 = 0.0006301;
-        A1 = 0.003312;
-        B1 = 0.9404;
-        D1 = 1.065;
-        E1 = 0.2738;
+       
+        A1=	0.00002836;
+
+        B1=	1.812;
+
+        E1=	0.06488;
+
+        C1=	0.001247;
+
+        D1=	0.9617;
 
         double ysize1 = pow(shift1, B1);
         System.out.println("ysize1: " + ysize1);
