@@ -161,8 +161,7 @@ public class Display extends javax.swing.JFrame
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
 
         mariaPanel = new JPanel();
         alexeiPanel = new JPanel();
@@ -175,6 +174,7 @@ public class Display extends javax.swing.JFrame
         depthLabel = new JLabel();
         reconnectControllerBtn = new JButton();
         quitBtn = new JButton();
+        zeroButton = new JButton();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("ROV Rasputin Commander");
@@ -240,14 +240,12 @@ public class Display extends javax.swing.JFrame
         getContentPane().add(rasputinStateLabel, new AbsoluteConstraints(1000, 470, -1, -1));
 
         reconnectCamBtn.setText("Force Camera Reconnect");
-        reconnectCamBtn.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
+        reconnectCamBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 reconnectCamBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(reconnectCamBtn, new AbsoluteConstraints(990, 710, 190, 60));
+        getContentPane().add(reconnectCamBtn, new AbsoluteConstraints(990, 730, 190, 40));
 
         depthLabel.setFont(depthLabel.getFont().deriveFont(depthLabel.getFont().getStyle() | Font.BOLD, depthLabel.getFont().getSize()+4));
         depthLabel.setForeground(new Color(0, 255, 0));
@@ -255,24 +253,28 @@ public class Display extends javax.swing.JFrame
         getContentPane().add(depthLabel, new AbsoluteConstraints(1000, 500, -1, -1));
 
         reconnectControllerBtn.setText("Force Controller Reconnect");
-        reconnectControllerBtn.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
+        reconnectControllerBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 reconnectControllerBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(reconnectControllerBtn, new AbsoluteConstraints(990, 640, 190, 60));
+        getContentPane().add(reconnectControllerBtn, new AbsoluteConstraints(990, 680, 190, 40));
 
-        quitBtn.setText("Exit Commander");
-        quitBtn.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
+        quitBtn.setText("Exit Program");
+        quitBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
                 quitBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(quitBtn, new AbsoluteConstraints(990, 570, 190, 60));
+        getContentPane().add(quitBtn, new AbsoluteConstraints(990, 630, 190, 40));
+
+        zeroButton.setText("Zero Depth");
+        zeroButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                zeroButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(zeroButton, new AbsoluteConstraints(990, 580, 190, 40));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -294,6 +296,11 @@ public class Display extends javax.swing.JFrame
         disconnectCam();
         System.exit(0);
     }//GEN-LAST:event_quitBtnActionPerformed
+
+    private void zeroButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_zeroButtonActionPerformed
+        // TODO add your handling code here:
+        worker.depthOffset = worker.depth;
+    }//GEN-LAST:event_zeroButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -329,5 +336,6 @@ public class Display extends javax.swing.JFrame
     private JButton reconnectCamBtn;
     private JButton reconnectControllerBtn;
     public JLabel stabilizationStateLabel;
+    private JButton zeroButton;
     // End of variables declaration//GEN-END:variables
 }

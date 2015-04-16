@@ -25,7 +25,8 @@ public class Worker extends Thread
 
     private ROV rasputin;
 
-    private float roll, pitch, yaw, depth;
+    private float roll, pitch, yaw;
+    public float depthOffset,depth;
 
     public Worker(Display display, Properties settings)
     {
@@ -239,7 +240,7 @@ public class Worker extends Thread
         basicStroke2 = new BasicStroke(2);
         basicStroke3 = new BasicStroke(3);
     }
-
+    private boolean firstReady = false;
     private void drawMeterset(Graphics2D graphics)
     {
         graphics.setColor(Color.black);
@@ -296,6 +297,10 @@ public class Worker extends Thread
             parent.clawStateLabel.setForeground(Color.green);
         }
         if(stateByteBitSet.get(2)) {
+            if(!firstReady){
+                firstReady = true;
+                depthOffset = depth;
+            }
             parent.rasputinStateLabel.setText("ROV ready");
             parent.rasputinStateLabel.setForeground(Color.green);
         } else {
@@ -303,7 +308,7 @@ public class Worker extends Thread
             parent.rasputinStateLabel.setForeground(Color.red);
         }
 
-        parent.depthLabel.setText(String.format("Depth: %.5f", depth));
+        parent.depthLabel.setText(String.format("Depth: %.5f", depth-depthOffset));
     }
 
     private void updateUI()
