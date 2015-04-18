@@ -6,7 +6,6 @@
 package com.awooga.rovsurfacegimp;
 
 import com.github.sarxos.webcam.Webcam;
-import com.github.sarxos.webcam.WebcamImageTransformer;
 import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.ds.ipcam.*;
 import com.sun.image.codec.jpeg.JPEGCodec;
@@ -487,117 +486,159 @@ public class Display extends javax.swing.JFrame {
             ry2 = tmp;
         }
 
-        pixsizeL = lx2 - lx1;
-        System.out.println("pixsizeL " + pixsizeL);
-
-        pixsizeR = rx2 - rx1;
-        System.out.println("pixsizeR " + pixsizeR);
-
-        pixsize = (pixsizeL + pixsizeR) / 2;
-        System.out.println("average size pix: " + pixsize);
-
-        shift = lx1 - rx1;
-        shift = (shift > 0) ? shift : -shift;
-        System.out.println("pixel shift " + shift);
-
-        pixsizeL1 = ly2 - ly1;
-        System.out.println("pixsizeL1 " + pixsizeL1);
-
-        pixsizeR1 = ry2 - ry1;
-        System.out.println("pixsizeR1 " + pixsizeR1);
-
-        pixsize1 = (pixsizeL1 + pixsizeR1) / 2;
-        System.out.println("average size pix1: " + pixsize1);
-
-        shift1 = ly1 - ry1;
-        shift1 = (shift1 > 0) ? shift1 : -shift1;
-        System.out.println("pixel shift1 " + shift1);
+//        pixsizeL = lx2 - lx1;
+//        System.out.println("pixsizeL " + pixsizeL);
+//
+//        pixsizeR = rx2 - rx1;
+//        System.out.println("pixsizeR " + pixsizeR);
+//
+//        pixsize = (pixsizeL + pixsizeR) / 2;
+//        System.out.println("average size pix: " + pixsize);
+//
+//        shift = lx1 - rx1;
+//        shift = (shift > 0) ? shift : -shift;
+//        System.out.println("pixel shift " + shift);
+//
+//        pixsizeL1 = ly2 - ly1;
+//        System.out.println("pixsizeL1 " + pixsizeL1);
+//
+//        pixsizeR1 = ry2 - ry1;
+//        System.out.println("pixsizeR1 " + pixsizeR1);
+//
+//        pixsize1 = (pixsizeL1 + pixsizeR1) / 2;
+//        System.out.println("average size pix1: " + pixsize1);
+//
+//        shift1 = ly1 - ry1;
+//        shift1 = (shift1 > 0) ? shift1 : -shift1;
+//        System.out.println("pixel shift1 " + shift1);
 
 //        size = C*(pixsize/(A*(shift^B)))^D;       
 //       pow(shift, B);     
 //        size = C*(pixsize/(A*(pow(shift,B))))^D;     
-        A = 0.001467;
-        B = 1.119;
-        E = 0.1522;
-        C = 0.0007641;
-        D = 1.034;
-
-        double size1 = pow(shift, B);
-        System.out.println("size1: " + size1);
-
-        double size2 = pixsize / (A * (size1) + E);
-        System.out.println("size2: " + size2);
-
-        System.out.println("pixsize: " + pixsize);
-
-//        double size3;
-//        if(size2>0){
-//        }else{
-//            double temp = Math.abs(size2);
-//            size3 = pow(temp ,1.5);
-//            size3*=-1;
+//        A=.002343;
+//        B=1.05092746;
+//        E=-.07724;
+//        C=.001367;
+//        D=.9582;
+//
+//        double size1 = pow(shift, B);
+//        System.out.println("size1: " + size1);
+//
+//        double size2 = pixsize / (A * (size1) + E);
+//        System.out.println("size2: " + size2);
+//
+//        System.out.println("pixsize: " + pixsize);
+//
+////        double size3;
+////        if(size2>0){
+////        }else{
+////            double temp = Math.abs(size2);
+////            size3 = pow(temp ,1.5);
+////            size3*=-1;
+////        }
+//        double size3 = pow(size2, D);
+//
+//        System.out.println("size3: " + size3);
+//
+//        size = C * size3;
+//
+//        System.out.println("size hue: " + size);
+//
+//        Double.toString(size);
+//
+//        String sizeString;
+//        if (Double.isInfinite(size)) {
+//            sizeString = "your mom";
+//        } else {
+//            sizeString = String.format("%.5f", size);
 //        }
-        double size3 = pow(size2, D);
-
-        System.out.println("size3: " + size3);
-
-        size = C * size3;
-
-        System.out.println("size hue: " + size);
-
-        Double.toString(size);
-
-        String sizeString;
-        if (Double.isInfinite(size)) {
-            sizeString = "your mom";
-        } else {
-            sizeString = String.format("%.5f", size);
-        }
-        outputLabel.setText(String.format("left(%.0f-%.0f), right(%.0f-%.0f), size(%s)", lx1, lx2, rx1, rx2, sizeString));
+//        outputLabel.setText(String.format("left(%.0f-%.0f), right(%.0f-%.0f), size(%s)", lx1, lx2, rx1, rx2, sizeString));
 
         // NEW SHIT FOR Y
-        A1 = 0.00002836;
-
-        B1 = 1.812;
-
-        E1 = 0.06488;
-
-        C1 = 0.001247;
-
-        D1 = 0.9617;
-
-        double ysize1 = pow(shift1, B1);
-        System.out.println("ysize1: " + ysize1);
-
-        double ysize2 = pixsize1 / (A1 * (ysize1) + E1);
-        System.out.println("ysize2: " + ysize2);
-
-        System.out.println("pixsize1: " + pixsize1);
-
-//        double size3;
-//        if(size2>0){
-//        }else{
-//            double temp = Math.abs(size2);
-//            size3 = pow(temp ,1.5);
-//            size3*=-1;
+//        A1 = 0.00002836;
+//
+//        B1 = 1.812;
+//
+//        E1 = 0.06488;
+//
+//        C1 = 0.001247;
+//
+//        D1 = 0.9617;
+        
+//        A1=A;
+//        B1=B;
+//        E1=E;
+//        C1=C;
+//        D1=D;
+//
+//        double ysize1 = pow(shift1, B1);
+//        System.out.println("ysize1: " + ysize1);
+//
+//        //size1 was ysize1
+//        double ysize2 = pixsize1 / (A1 * (size1) + E1);
+//        System.out.println("ysize2: " + ysize2);
+//
+//        System.out.println("pixsize1: " + pixsize1);
+//
+////        double size3;
+////        if(size2>0){
+////        }else{
+////            double temp = Math.abs(size2);
+////            size3 = pow(temp ,1.5);
+////            size3*=-1;
+////        }
+//        double ysize3 = pow(ysize2, D1);
+//
+//        System.out.println("ysize3: " + ysize3);
+//
+//        size1 = C1 * ysize3;
+//
+//        System.out.println("size1 hue: " + size1);
+//
+//        Double.toString(size1);
+//
+//        String size1String;
+//        if (Double.isInfinite(size1)) {
+//            size1String = "your mom";
+//        } else {
+//            size1String = String.format("%.5f", size1);
 //        }
-        double ysize3 = pow(ysize2, D1);
+//        outputLabel1.setText(String.format("left(%.0f-%.0f), right(%.0f-%.0f), size(%s)", ly1, ly2, ry1, ry2, size1String));
 
-        System.out.println("ysize3: " + ysize3);
-
-        size1 = C1 * ysize3;
-
-        System.out.println("size1 hue: " + size1);
-
-        Double.toString(size1);
-
-        String size1String;
-        if (Double.isInfinite(size1)) {
-            size1String = "your mom";
-        } else {
-            size1String = String.format("%.5f", size1);
-        }
-        outputLabel1.setText(String.format("left(%.0f-%.0f), right(%.0f-%.0f), size(%s)", ly1, ly2, ry1, ry2, size1String));
+        double yscale = .935142586; // from x to y
+        
+        A=.00157204;
+        B=1.05092746;
+        E=-.134823;
+        C=.001517;
+        D=.9433852;
+        
+        double sx1=lx1-rx1;
+        double sx2=lx2-rx2;
+        double sx=(sx1+sx2)/2;
+        double sy1=ly1-ry1;
+        double sy2=ly2-ry2;
+        double sy=(sy1+sy2)/2/yscale;
+        double shift=Math.hypot(sx, sy);
+        
+        double lpx=lx2-lx1;
+        double lpy=(ly2-ly1)/yscale;
+        double lp=Math.hypot(lpx, lpy);
+        double rpx=rx2-rx1;
+        double rpy=(ry2-ry1)/yscale;
+        double rp=Math.hypot(rpx, rpy);
+        double pixels=(lp+rp)/2;
+        
+        double distance=1/(A*Math.pow(shift, B)+E);
+        double hueValue=pixels*distance;
+        double Size=C*Math.pow(hueValue, D);
+        
+        outputLabel.setText(String.format(
+                "Lx(%.0f,%.0f), Rx(%.0f,%.0f), Ly(%.0f,%.0f), Ry(%.0f,%.0f)",
+                lx1,lx2,rx1,rx2,ly1,ly2,ry1,ry2));
+        outputLabel1.setText(String.format(
+                "shift(%.0f), pixel(%.0f), hue(%.0f), dist(%.2fm), Size(%.2fcm)",
+                shift,pixels,hueValue,distance,Size*100));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
